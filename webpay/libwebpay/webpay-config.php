@@ -7,29 +7,28 @@
  * @version    3.0.6
  */
 
-class WebPayConfig{
-        private $params = array();
+class WebPayConfig {
 
-        function __construct($params){
-                $this->params = $params;
-        }
+    private $params = array();
 
-        public function getParams(){
+    function __construct($params){
+        $this->params = $params;
+    }
+
+    public function getParams(){
         return $this->params;
     }
 
-        public function getParam($name){
+    public function getParam($name){
         return $this->params[$name];
     }
 
-        public function getModo(){
-                $modo = $this->params["MODO"];
+    public function getModo(){
+        $modo = $this->params["MODO"];
         if (!isset($modo) || $modo == ""){
             $modo = "INTEGRACION";
         }
-                return $modo;
-        }
+        return $modo;
+    }
 }
-
-
 ?>

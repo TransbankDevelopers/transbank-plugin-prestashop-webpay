@@ -22,7 +22,24 @@ sed -i.bkp "s/\[3.0.6\]/\[${TRAVIS_TAG#"v"}\]/g" "$SRC_DIR/$FILE3"
 
 PLUGIN_FILE="plugin-prestashop-webpay-$TRAVIS_TAG.zip"
 
-zip -r9 $PLUGIN_FILE $SRC_DIR -x "$SRC_DIR/$FILE1.bkp" "$SRC_DIR/$FILE2.bkp" "$SRC_DIR/$FILE3.bkp"
+zip -FSr $PLUGIN_FILE $SRC_DIR -x webpay/vendor/tecnickcom/tcpdf/fonts/a*\/* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/d*\/* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/f*\/* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/a* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/ci* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/d* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/f* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/k* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/m* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/p* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/s* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/t* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/u* \
+                                    webpay/vendor/tecnickcom/tcpdf/examples/\* \
+                                    webpay/vendor/apache/log4php/src/examples/\* \
+                                    webpay/vendor/apache/log4php/src/test/\* \
+                                    webpay/vendor/apache/log4php/src/site/\* \
+                                    "$SRC_DIR/$FILE1.bkp" "$SRC_DIR/$FILE2.bkp" "$SRC_DIR/$FILE3.bkp"
 
 cp "$SRC_DIR/$FILE1.bkp" "$SRC_DIR/$FILE1"
 cp "$SRC_DIR/$FILE2.bkp" "$SRC_DIR/$FILE2"

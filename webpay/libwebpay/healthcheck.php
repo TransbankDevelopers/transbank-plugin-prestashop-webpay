@@ -6,8 +6,6 @@
  * @license    GNU LGPL
  * @version    3.0.6
  */
-
-
 require_once(__DIR__.'/soap/lib/nusoap.php');
 require_once(__DIR__.'/webpay-normal.php');
 require_once(__DIR__.'/webpay-config.php');
@@ -15,8 +13,6 @@ require_once(__DIR__.'/webpay-config.php');
 /**
  * NOTE:llamar clase igual que archivo fisico
  */
-
-
 class HealthCheck
 {
   var $phpinfo;
@@ -52,7 +48,7 @@ class HealthCheck
     $args['URL_RETURN'] = $this->testurl."?action=return";
     $args['URL_FINAL'] = $this->testurl."?action=final";
     $this->webpayconfig = new WebPayConfig($args);
-    
+
     $this->extensions = null;
     $this->resume = null;
     $this->fullResume = null;
@@ -68,7 +64,6 @@ class HealthCheck
       'dom',
     );
 
-
     // orden segun definicion de nusoap
     $this->listEcommerce = array(
       'prestashop' => '1',
@@ -77,10 +72,9 @@ class HealthCheck
       'woocommerce' => '4',
       'virtuemart' => '5',
       'sdk' => '6'
-  );
+    );
 
     $this->nusoap = new nusoap_client("http://www.cumbregroup.com/tbk-webservice/PluginVersion.php?wsdl", true);
-
   }
 
   // validaciones
@@ -409,7 +403,7 @@ class HealthCheck
   private function setInitTransaction(){
 
 	$this->webpay = new WebPayNormal($this->webpayconfig);
-  
+
     $amount = 990;
     $buyOrder = "_Healthcheck_";
     $sessionId = uniqid();
@@ -503,7 +497,4 @@ class HealthCheck
     return json_encode($this->setpostinstall());
   }
 }
-
-
-
- ?>
+?>

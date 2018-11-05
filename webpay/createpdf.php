@@ -2,7 +2,7 @@
 	require_once('../../config/config.inc.php');
 	if (!defined('_PS_VERSION_'))
 		exit;
-	require_once('libwebpay/tcpdf/reportPDFlog.php');
+	require_once('libwebpay/reportPDFlog.php');
 	require_once('libwebpay/healthcheck.php');
 
 	$ecommerce = 'prestashop';//obtener nombre de ecommerce
