@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/nbproject/private/private.xml</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/webpay.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/libwebpay/soap/soapclient.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/views/templates/hook/payment_return.tpl</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/translations/es.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/views/templates/hook/infos.tpl</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/controllers/front/index.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/translations/index.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/libwebpay/soap/soap-wsse.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/integration/integration.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/views/templates/hook/payment.tpl</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/config.xml</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/controllers/front/payment.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/views/templates/front/payment_execution.tpl</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/views/templates/admin/config.tpl</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/libwebpay/webpay-normal.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/controllers/index.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/libwebpay/webpay-soap.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/libwebpay/webpay-config.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/controllers/front/validate.php</file>
+            <file>file:/C:/xampp3/htdocs/prestashop/modules/webpay/libwebpay/soap/xmlseclibs.php</file>
+        </group>
+    </open-files>
+</project-private>

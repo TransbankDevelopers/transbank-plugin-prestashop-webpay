@@ -1,0 +1,1 @@
+[2017-08-29 19:18:32] [ERROR] [_prueba_] [initTransaction] [{"sharesAmount":null,"sharesNumber":null,"amount":9990,"commerceCode":"0303456","buyOrder":"_prueba_"}] [{"error":"Error conectando a Webpay","detail":"Failure Signing Data: error:0906D06C:PEM routines:PEM_read_bio:no start line - 1"}] 
