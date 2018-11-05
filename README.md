@@ -19,8 +19,8 @@ El manual de instalación para el usuario final se encuentra disponible [acá](d
 El plugin depende de las siguientes librerías:
 
 * transbank/transbank-sdk
-* TCPDF
-* log4php
+* tecnickcom/tcpdf
+* apache/log4php
 
 Para cumplir estas dependencias, debes instalar [Composer](https://getcomposer.org), e instalarlas con el comando `composer install`.
 
