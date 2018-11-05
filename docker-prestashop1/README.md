@@ -51,14 +51,20 @@ Para instalar Prestashop, hacer lo siguiente:
 ./shell
 ```
 
+### Logs
+
+```
+tail -f /var/www/html/var/logs/Transbank_webpay/log_transbank_prestashop_*.log
+```
+
 ### Paneles
 
 **Web server:** http://localhost:8080
 
 **Admin:** http://localhost:8080/adminop
 
-    user: onepay@onepay.com
-    password: onepay
+    user: admin@admin.com
+    password: password
 
 
 ### Importante

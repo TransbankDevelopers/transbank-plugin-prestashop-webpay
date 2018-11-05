@@ -2,31 +2,31 @@ version: '3'
 services:
   web:
     image: "prestashop/prestashop:1.7"
-    container_name: "onepay_prestashop"
+    container_name: "webpay_prestashop"
     environment:
       - PS_LANGUAGE=es
       - PS_INSTALL_AUTO=1
       - PS_ERASE_DB=1
       - PS_DEV_MODE=1
       - PS_DOMAIN=localhost:8080
-      - ADMIN_MAIL=onepay@onepay.com
-      - ADMIN_PASSWD=onepay
+      - ADMIN_MAIL=admin@admin.com
+      - ADMIN_PASSWD=password
       - PS_FOLDER_ADMIN=adminop
       - PS_FOLDER_INSTALL=installop
       - PS_COUNTRY=cl
       - DB_NAME=prestashop
-      - DB_SERVER=onepay_mariadb
+      - DB_SERVER=webpay_mariadb
     ports:
       - "8080:80"
     links:
       - mariadb:mariadb
     depends_on:
       - mariadb
-    volumes:
-    - ..:/var/www/html/modules/onepay
+    #volumes:
+    #  - ../webpay:/var/www/html/modules/webpay
   mariadb:
     image: mariadb
-    container_name: onepay_mariadb
+    container_name: webpay_mariadb
     expose:
       - "3306"
     environment:
