@@ -6,21 +6,20 @@
 		<link href="../modules/webpay/views/css/tbk.css" rel="stylesheet">
 		<script src="../modules/webpay/views/js/request.js"> </script>
 		<script src="https://unpkg.com/bootstrap-switch"></script>
-		
-		
+
 		<h2>{l s='Pago electrónico con Tarjetas de Crédito o Redcompra a través de Webpay Plus' mod='webpay'}</h2>
 		<button  class ="btn btn-primary" data-toggle="modal" data-target="#tb_modal">Informacion</button>
 		<hr>
 
 		<form action="{$post_url|escape:'htmlall':'UTF-8'}" method="post" style="clear: both; margin-top: 10px;">
-			
+
 			<h2 class="">{l s='Configuracion' mod='webpay'}</h2>
 			{if isset($errors.merchantERR)}
 				<div class="error">
 					<p>{$errors.merchantERR|escape:'htmlall':'UTF-8'}</p>
 				</div>
 			{/if}
-			
+
 			<label for="storeID">{l s='Codigo de Comercio' mod='webpay'}</label>
 			<div class="margin-form"><input type="text" size="90" id="storeID" name="storeID" value="{$data_storeid|escape:'htmlall':'UTF-8'}"/></div>
 			<br/>
@@ -47,15 +46,15 @@
 				</select>
 			</div>
 			<br/>
-			
+
 			<div align="right">
 				<button type="submit" value="1" id="webpay_updateSettings" name="webpay_updateSettings" class="btn btn-info pull-right">
 					<i class="process-icon-save" value="{l s='Save Settings' mod='webpay'}"></i> Guardar
 				</button>
 			</div>
-			
+
 		</form>
-		
+
 		<div class="modal" id="tb_modal">
 			<div class="modal-dialog" >
 				<div class="modal-content">
@@ -69,12 +68,12 @@
 					</div>
 					<div class="modal-body">
 						<div class="tab-content">
-							
+
 							<!-- INFORMACION -->
 							<div id="info" class="tab-pane fade in active">
-								
+
 								<h2 class="">{l s='Informe pdf' mod='webpay'}</h2>
-								<form method="post" action="../modules/webpay/createpdf.php" target="_blank">
+								<form method="post" action="../modules/webpay/libwebpay/CreatePdf.php" target="_blank">
 									<input type="hidden" name="ambient" value="{$data_ambient}">
 									<input type="hidden" name="storeID" value="{$data_storeid}">
 									<input type="hidden" name="certificate" value="{$data_certificate}">
@@ -85,9 +84,9 @@
 										<i class="icon-file-text" value="{l s='genera pdf' mod='webpay'}"></i> Crear PDF
 									</button>
 								</form>
-								
+
 								<hr style="border-width: 2px">
-								
+
 								<h2 class="">{l s='Información de Plugin / Ambiente' mod='webpay'}</h2>
 								<table class="table table-striped">
 									<tr>
@@ -107,7 +106,7 @@
 										<td class="tbk_table_td">{$last_plugin_version}</td>
 									</tr>
 								</table>
-								
+
 								<br>
 								<h2 class="">{l s='Validación certificados' mod='webpay'}</h2>
 								<h4 class="tbk_table_title">{l s='Consistencias' mod='webpay'}</h4>
@@ -121,7 +120,7 @@
 										<td class="tbk_table_td"><span class="label {if $commerce_code_validate eq 'OK'}label-success2{else}label-danger2{/if}">{$commerce_code_validate}</span></td>
 									</tr>
 								</table>
-								
+
 								<h4 class="tbk_table_title">{l s='cert_info' mod='webpay'}</h4>
 								<table class="table table-striped">
 									<tr>
@@ -145,7 +144,7 @@
 										<td class="tbk_table_td">{$valid_to}</td>
 									</tr>
 								</table>
-								
+
 								<br>
 								<h2 class="">{l s='php_extensions_status' mod='webpay'}</h2>
 								<h4 class="tbk_table_title">{l s='Información Principal' mod='webpay'}</h4>
@@ -155,7 +154,7 @@
 										<td class="tbk_table_td">{$server_version}</td>
 									</tr>
 								</table>
-								
+
 								<h4 class="tbk_table_title">{l s='PHP' mod='webpay'}</h4>
 								<table class="table table-striped">
 									<tr>
@@ -167,7 +166,7 @@
 										<td class="tbk_table_td">{$php_version}</td>
 									</tr>
 								</table>
-								
+
 								<h4 class="tbk_table_title">{l s='Extensiones PHP requeridas' mod='webpay'}</h4>
 								<table class="table table-responsive table-striped">
 									<tr>
@@ -202,7 +201,7 @@
 										<td class="tbk_table_td">{$dom_version}</td>
 									</tr>
 								</table>
-								
+
 								<br>
 								<h2 class="">{l s='Validación Transacción' mod='webpay'}</h2>
 								<h4 class="tbk_table_title">{l s='Petición a Transbank' mod='webpay'}</h4>
@@ -224,7 +223,7 @@
 									</tr>
 									<tr id="row_response_token" style="display:none">
 									   <td><div title="Token entregada por Transbank para realizar la transacción" class="label label-info">?</div> <strong>{l s='Token' mod='webpay'}: </strong></td>
-									   <td class="tbk_table_trans content_token"></td>	
+									   <td class="tbk_table_trans content_token"></td>
 									</tr>
 									<tr id="row_error_message" style="display:none">
 										<td><div title="Mensaje de error devuelto por Transbank al fallar init_transaction" class="label label-info">?</div> <strong>{l s='Error' mod='webpay'}: </strong></td>
@@ -234,14 +233,14 @@
 										<td><div title="Detalle del error devuelto por Transbank al fallar init_transaction" class="label label-info">?</div> <strong>{l s='Detalle' mod='webpay'}: </strong></td>
 										<td class="tbk_table_trans error_detail_content"></td>
 									</tr>
-									
+
 								</table>
 							</div>
-							
+
 							<!-- PHP INFO -->
 							<div id="php_info" class="tab-pane fade">
 								<h2 class="">{l s='Informe PHP info ' mod='webpay'}</h2>
-								<form method="post" action="../modules/webpay/createpdf.php" target="_blank">
+								<form method="post" action="../modules/webpay/libwebpay/CreatePdf.php" target="_blank">
 									<input type="hidden" name="ambient" value="{$data_ambient}">
 									<input type="hidden" name="storeID" value="{$data_storeid}">
 									<input type="hidden" name="certificate" value="{$data_certificate}">
@@ -252,19 +251,19 @@
 										<i class="icon-file-text" value="{l s='Crear PHP info' mod='webpay'}"></i> Crear PHP info
 									</button>
 								</form>
-								
+
 								<hr style="border-width: 2px">
-								
+
 								<br>
 								<h2 class="">{l s='php_info' mod='webpay'}</h2>
 								<span style="font-size: 10px; font-family:monospace; display: block; background: white;overflow: hidden; width: 90%;" >{$php_info}</span><br>
 							</div>
-							
+
 							<!-- REGISTROS -->
 							<div id="logs" class="tab-pane fade">
-								
+
 								<h2 class="">{l s='Configuración' mod='webpay'}</h2>
-								<form method="post" action ="../modules/webpay/call_loghandler.php" id="log_form" target= "_blank">
+								<form method="post" action ="../modules/webpay/libwebpay/call_LogHandler.php" id="log_form" target= "_blank">
 									<table class="table table-striped">
 										<tr>
 											<td><div title="Al activar esta opción se habilita que se guarden los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Activar Registro:" mod='webpay'} </strong></td>
@@ -278,7 +277,7 @@
 										</tr>
 									</table>
 									<script> $("[name='action_check']").bootstrapSwitch();</script>
-									
+
 									<table class="table table-striped">
 										<tr>
 											<td><div title="Cantidad de días que se conservan los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Cantidad de Dias a Registrar" mod='webpay'}: </strong></td>
@@ -295,9 +294,9 @@
 									</table>
 									<div class="btn btn-primary" onclick="swap_action()"> {l s='Actualizar Parametros' mod='webpay'}</div>
 								</form>
-								
+
 								<h2 class="">{l s='Información de Registros' mod='webpay'}</h2>
-								
+
 								<table class="table table-striped">
 									<tr>
 										<td><div title="Informa si actualmente se guarda la información de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Estado de Registros" mod='webpay'}: </strong></td>
@@ -322,9 +321,9 @@
 										</td>
 									</tr>
 								</table>
-								
+
 								<h2 class="">{l s='Últimos Registros' mod='webpay'}</h2>
-								
+
 								<table class="table table-striped">
 									<tr>
 										<td><div title="Nombre del útimo archivo de registro creado" class="label label-info">?</div> <strong>{l s="Último Documento" mod='webpay'}: </strong></td>
@@ -343,7 +342,7 @@
 								<pre>
 									<span class="log_content" style="font-size: 10px; font-family:monospace; display: block; background: white;width: fit-content;" >{$logs}</span>
 								</pre>
-								
+
 							</div>
 						</div>
 					</div>
@@ -355,21 +354,21 @@
 		</div>
 
 		<script type="text/javascript">
-			
+
 			function swap_action(){
-				
-				//AJAX CALL 
-				
+
+				//AJAX CALL
+
 				$.ajax({
 					type:'POST',
-					url:'../modules/webpay/call_loghandler.php',
+					url:'../modules/webpay/libwebpay/call_LogHandler.php',
 					data:{
 						action_check:document.getElementById("action_check").checked,
 						days:$("#days").val(),
 						size:$("#size").val()
 					},
 					success:function(response){
-					
+
 						if(response.success)
 						{
 							//actualiza contenido
@@ -382,7 +381,7 @@
 								document.getElementById('action_txt').innerHTML = 'Registro desactivado';
 								$('#action_txt').removeClass("label-success2").addClass("label-warning");
 							}
-							
+
 							$(".td_log_dir").empty();
 							$(".td_log_count").empty();
 							$(".td_log_files").empty();
@@ -390,53 +389,53 @@
 							$(".td_log_file_weight").empty();
 							$(".td_log_regs_lines").empty();
 							$(".log_content").empty();
-							
+
 							$(".td_log_dir").append(response.log.log_dir);
 							$(".td_log_count").append(response.log.logs_count.log_count);
-							
+
 							var ul_content = '<ul style="font-size:0.8em;">';
-							
+
 							response.log.logs_list.map(function(log_list){
-							
+
 								ul_content += '<li>'+log_list+'</li>';
-							
+
 							});
-							
+
 							ul_content += '</ul>';
-							
+
 							$(".td_log_files").append(ul_content);
 							$(".td_log_last_file").append(response.log.last_log.log_file);
 							$(".td_log_file_weight").append(response.log.last_log.log_weight);
 							$(".td_log_regs_lines").append(response.log.last_log.log_regs_lines);
 							$(".log_content").append(response.log.last_log.log_content);
-							
-							
+
+
 						}
-					
+
 					},
 					dataType:'json'
 				});
-				
+
 			}
 			//swap_action();
 			function cargaDatosIntegracion(){
 				var private_key_js = "{$data_secretcode_init}".replace(/<br\s*\/?>/mg,"\n");
 				var public_cert_js = "{$data_certificate_init}".replace(/<br\s*\/?>/mg,"\n");
 				var webpay_cert_js = "{$data_certificatetransbank_init}".replace(/<br\s*\/?>/mg,"\n");
-				
+
 				document.getElementById('storeID').value = "{$data_storeid_init|escape:'htmlall':'UTF-8'}";
 				document.getElementById('secretCode').value = private_key_js;
 				document.getElementById('certificate').value = public_cert_js;
 				document.getElementById('certificateTransbank').value = webpay_cert_js;
 			}
-			
+
 			function cargaDatosProduccion(){
 				document.getElementById('secretCode').value = '';
 				document.getElementById('certificate').value = '';
 				document.getElementById('certificateTransbank').value = '';
 				document.getElementById('storeID').value = '';
 			}
-			
+
 		</script>
 	</div>
 </body>

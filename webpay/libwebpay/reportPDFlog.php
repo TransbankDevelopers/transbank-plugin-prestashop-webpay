@@ -1,6 +1,6 @@
 <?php
-require_once(__DIR__.'/loghandler.php');
-require_once(__DIR__.'/reportPDF.php');
+require_once('LogHandler.php');
+require_once('ReportPdf.php');
 
 class reportPDFlog {
 
@@ -12,7 +12,7 @@ class reportPDFlog {
     }
 
     function getReport($myJSON){
-        $log = new loghandler($this->ecommerce);
+        $log = new LogHandler($this->ecommerce);
         $json = json_decode($log->getLastLog(),true);
 
         $obj = json_decode($myJSON,true);

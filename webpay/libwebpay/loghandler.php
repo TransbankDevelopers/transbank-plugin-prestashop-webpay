@@ -7,12 +7,17 @@
  * @version    3.0.6
  */
 
-require_once(dirname(__FILE__).'/../vendor/apache/log4php/src/main/php/Logger.php');
+require_once(_PS_MODULE_DIR_.'webpay/vendor/apache/log4php/src/main/php/Logger.php');
 
 define('Webpay_ROOT', dirname(__DIR__));
 
-class LogHandler
-{
+class LogHandler {
+
+    //constants for log handler
+    const LOG_DEBUG_ENABLED = true; //enable or disable debug logs
+    const LOG_INFO_ENABLED = true; //enable or disable info logs
+    const LOG_ERROR_ENABLED = true; //enable or disable error logs
+
     private $timestamp;
     private $idTransaction;
     private $method;
@@ -24,8 +29,7 @@ class LogHandler
     private $configuration;
     private $l4php;
 
-    function __construct($ecommerce = 'sdk', $days = 7, $weight = '2MB')
-    {
+    function __construct($ecommerce = 'prestashop', $days = 7, $weight = '2MB') {
         $this->timestamp = null;
         $this->idTransaction = null;
         $this->method = null;
@@ -65,10 +69,9 @@ class LogHandler
 
         Logger::configure($this->configuration);
         $this->logger = Logger::getLogger('main');
-        $this->logger->info('prueba');
     }
 
-    private function formatBytes($path){
+    private function formatBytes($path) {
         $bytes = sprintf('%u', filesize($path));
 
         if ($bytes > 0){
@@ -82,7 +85,7 @@ class LogHandler
         return $bytes;
     }
 
-    private function getIsLogDir(){
+    private function getIsLogDir() {
         if (! file_exists($this->logDir)){
             //echo "error!: no existe directorio de logs, favor crear uno";
             return false;
@@ -91,20 +94,20 @@ class LogHandler
         }
     }
 
-    private function setMakeLogDir(){
+    private function setMakeLogDir() {
         if ($this->getIsLogDir() === false) {
             mkdir($this->logDir, 0777, true);
         }else{
-        //   echo "error!: directorio ya ha sido creado";
+            //echo "error!: directorio ya ha sido creado";
             exit;
         }
     }
 
-    private function setparamsconf($days, $weight){
+    private function setparamsconf($days, $weight) {
         if (file_exists($this->lockfile)) {
             $file = fopen($this->lockfile, "w") or die("No se puede truncar archivo");
             if (! is_numeric($days) or $days == null or $days == '' or $days === false) {
-            $days = 7;
+                $days = 7;
             }
             $txt = "{$days}\n";
             fwrite($file, $txt);
@@ -118,7 +121,7 @@ class LogHandler
         }
     }
 
-    private function setLockFile(){
+    private function setLockFile() {
         if (! file_exists($this->lockfile)) {
             $file = fopen($this->lockfile,"w") or die("No se puede crear archivo de bloqueo");
             if (! is_numeric($this->confdays) or $this->confdays == null or $this->confdays == '' or $this->confdays === false) {
@@ -137,24 +140,23 @@ class LogHandler
         }
     }
 
-    public function getValidateLockFile(){
+    public function getValidateLockFile() {
         if (! file_exists($this->lockfile)) {
             $result = array(
-            'status' => false,
-            'lock_file' => basename($this->lockfile),
-            'max_logs_days' => '7',
-            'max_log_weight' => '2'
+                'status' => false,
+                'lock_file' => basename($this->lockfile),
+                'max_logs_days' => '7',
+                'max_log_weight' => '2'
             );
-        }else{
+        } else {
             $lines = file($this->lockfile);
             $this->confdays = trim(preg_replace('/\s\s+/', ' ',$lines[0] ));
             $this->confweight = trim(preg_replace('/\s\s+/', ' ',$lines[1]));
             $result = array(
-
-            'status' => true,
-            'lock_file' => basename($this->lockfile),
-            'max_logs_days' => $this->confdays,
-            'max_log_weight' => $this->confweight
+                'status' => true,
+                'lock_file' => basename($this->lockfile),
+                'max_logs_days' => $this->confdays,
+                'max_log_weight' => $this->confweight
             );
         }
         return $result;
@@ -192,8 +194,7 @@ class LogHandler
         $this->lastLog = key($files);
         if(isset($this->lastLog)){
             $var = file_get_contents($this->lastLog);
-
-        }else{
+        } else {
             $var = null;
         }
         $return = array(
@@ -255,7 +256,6 @@ class LogHandler
         $result = array('log_count' => $count);
         return $result;
     }
-
 
     /** Funciones de mantencion de directorio de logs**/
 
@@ -340,7 +340,8 @@ class LogHandler
             'method' => $method,
             'transactionId' => (string)$id,
             'request' => json_encode($request),
-            'response' => json_encode($response)  );
+            'response' => json_encode($response)
+        );
         if ($status['status'] === true) {
             $this->setLogNewLine($args, $info);
         }
@@ -375,6 +376,33 @@ class LogHandler
 
     public function setnewconfig($days, $weight){
         $this->setparamsconf($days, $weight);
+    }
+
+    /**
+     * print DEBUG log
+     */
+    public function logDebug($msg) {
+        if (self::LOG_DEBUG_ENABLED) {
+            $this->logger->debug('DEBUG: ' . $msg);
+        }
+    }
+
+    /**
+     * print INFO log
+     */
+    public function logInfo($msg) {
+        if (self::LOG_INFO_ENABLED) {
+            $this->logger->info('INFO: ' . $msg);
+        }
+    }
+
+    /**
+     * print ERROR log
+     */
+    public function logError($msg) {
+        if (self::LOG_ERROR_ENABLED) {
+            $this->logger->error('ERROR: ' . $msg);
+        }
     }
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__).'/../vendor/tecnickcom/tcpdf/tcpdf.php');
+require_once(_PS_MODULE_DIR_.'webpay/vendor/tecnickcom/tcpdf/tcpdf.php');
 
 class reportPDF {
 
@@ -8,10 +8,10 @@ class reportPDF {
 
     function reportPDF(){
         $this->buffer='<html>
-        <head>
-            <link href="'.__DIR__.'/css/reportPDF.css" rel="stylesheet" type="text/css" media="all" />
-        </head>
-        <body>';
+                        <head>
+                            <link href="'.__DIR__.'/css/reportPDF.css" rel="stylesheet" type="text/css" media="all" />
+                        </head>
+                        <body>';
     }
 
     private function chain($element, $level){
@@ -54,9 +54,7 @@ class reportPDF {
             </td></tr>';
         }
         if ($level==0)
-            $this->buffer.= '
-        </table>
-        </body></html>';
+            $this->buffer.= '</table></body></html>';
     }
 
     public function getReport($myJSON){

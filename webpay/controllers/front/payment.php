@@ -1,16 +1,18 @@
 <?php
-require_once(dirname(__FILE__).'/../../libwebpay/webpay-config.php');
-require_once(dirname(__FILE__).'/../../libwebpay/webpay-normal.php');
+require_once(dirname(__FILE__).'../../../../../config/config.inc.php');
+if (!defined('_PS_VERSION_')) exit;
 
-class WebPayPaymentModuleFrontController extends ModuleFrontController
-{
+require_once(_PS_MODULE_DIR_.'webpay/libwebpay/WebpayConfig.php');
+require_once(_PS_MODULE_DIR_.'webpay/libwebpay/WebpayNormal.php');
+require_once(_PS_MODULE_DIR_.'webpay/libwebpay/LogHandler.php');
+
+class WebPayPaymentModuleFrontController extends ModuleFrontController {
 
     public $ssl = true;
     public $display_column_left = false;
 
-    public function initContent()
-    {
-        $WebPayPayment = new WebPay();
+    public function initContent() {
+
         $cart = $this->context->cart;
         $cartId = $this->context->cart->id;
         parent::initContent();
@@ -27,36 +29,37 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController
             'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'
         ));
 
-        $url_base = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "index.php?fc=module&module={$WebPayPayment->name}&controller=validate&cartId=" . $cartId;
+        $url_base = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "index.php?fc=module&module=webpay&controller=validate&cartId=" . $cartId;
         $url_exito   = $url_base."&return=ok";
         $url_fracaso = $url_base."&return=error";
-        $url_confirmacion = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/{$WebPayPayment->name}/validate.php";
-
-        // error_log("path ".$url_base, 0);
-        // error_log("path ".$url_exito, 0);
-        // error_log("path ".$url_fracaso, 0);
-        // error_log("path ".$url_confirmacion, 0);
+        $url_confirmacion = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/webpay/validate.php";
 
         Configuration::updateValue('WEBPAY_URL_FRACASO', $url_fracaso);
         Configuration::updateValue('WEBPAY_URL_EXITO', $url_exito);
         Configuration::updateValue('WEBPAY_URL_CONFIRMACION', $url_confirmacion);
 
         $config = array(
-            "MODO"            => Configuration::get('WEBPAY_AMBIENT'),
-            "PRIVATE_KEY"     => Configuration::get('WEBPAY_SECRETCODE'),
-            "PUBLIC_CERT"     => Configuration::get('WEBPAY_CERTIFICATE'),
-            "WEBPAY_CERT"     => Configuration::get('WEBPAY_CERTIFICATETRANSBANK'),
+            "MODO" => Configuration::get('WEBPAY_AMBIENT'),
+            "PRIVATE_KEY" => Configuration::get('WEBPAY_SECRETCODE'),
+            "PUBLIC_CERT" => Configuration::get('WEBPAY_CERTIFICATE'),
+            "WEBPAY_CERT" => Configuration::get('WEBPAY_CERTIFICATETRANSBANK'),
             "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID'),
-            "URL_FINAL"       => Configuration::get('WEBPAY_NOTIFYURL'),
-            "URL_RETURN"      => Configuration::get('WEBPAY_POSTBACKURL'),
-            "ECOMMERCE"      => 'prestashop'
+            "URL_FINAL" => Configuration::get('WEBPAY_NOTIFYURL'),
+            "URL_RETURN" => Configuration::get('WEBPAY_POSTBACKURL'),
+            "ECOMMERCE" => 'prestashop'
         );
 
-        try{
+        $this->log = new LogHandler($config['ECOMMERCE']);
+
+        try {
             $wp_config = new WebPayConfig($config);
-            $webpay = new WebPayNormal($wp_config);
-            $result = $webpay->initTransaction($cart->getOrderTotal(true, Cart::BOTH), $sessionId="123abc", $ordenCompra=$cartId, $config['URL_RETURN']);
-        }catch(Exception $e){
+            $webpay = new WebpayNormal($wp_config);
+
+            $result = $webpay->initTransaction($cart->getOrderTotal(true, Cart::BOTH), $sessionId=''.intval(microtime(true)), $ordenCompra=$cartId, $config['URL_RETURN']);
+
+            $this->log->logInfo('transaccion creada');
+
+        } catch(Exception $e) {
             $result["error"] = "Error conectando a Webpay";
             $result["detail"] = $e->getMessage();
         }

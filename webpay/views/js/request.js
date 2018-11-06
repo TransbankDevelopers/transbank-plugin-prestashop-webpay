@@ -1,7 +1,7 @@
 $( document ).ready(function() {
-    
+
 	$(".check_conn").click(function(){
-		
+
 		$(".btn_status").hide();
 		$(".check_conn").text("Verificando ...");
 		$("#row_response_url").hide();
@@ -13,9 +13,7 @@ $( document ).ready(function() {
 		$(".error_detail_content").empty();
 		$(".content_url").empty();
 		$(".content_token").empty();
-		
-		
-		
+
 		var data = {
 			"type" : "checkInit",
 			"MODE" : $("input[name='ambient']").val(),
@@ -24,20 +22,20 @@ $( document ).ready(function() {
 			"PRIVATE_KEY" : $("input[name='secretCode']").val(),
 			"WEBPAY_CERT" : $("input[name='certificateTransbank']").val()
 		};
-		
+
 		$.post('../modules/webpay/controllers/front/request.php',data,function(response){
-			
+
 			$(".status-label").show();
 			$(".check_conn").text("Verificar Conexión");
 			$("#row_response_status").show();
-			
+
 			if(response.success)
 			{
 				$(".status-label").removeClass("label-success2");
 				$(".status-label").removeClass("label-danger2");
-				
+
 				console.log(response.msg.status.string);
-				
+
 				if(response.msg.status.string == "OK")
 				{
 					$(".status-label").text("OK");
@@ -56,7 +54,7 @@ $( document ).ready(function() {
 					$(".error-content").append(response.msg.response.error);
 					$(".error_detail_content").append('<pre><code>'+response.msg.response.detail+'</code></pre>');
 				}
-				
+
 				$(".td_log_dir").empty();
 					$(".td_log_count").empty();
 					$(".td_log_files").empty();
@@ -64,20 +62,20 @@ $( document ).ready(function() {
 					$(".td_log_file_weight").empty();
 					$(".td_log_regs_lines").empty();
 					$(".log_content").empty();
-					
+
 					$(".td_log_dir").append(response.log.log_dir);
 					$(".td_log_count").append(response.log.logs_count.log_count);
-					
+
 					var ul_content = '<ul style="font-size:0.8em;">';
-					
+
 					response.log.logs_list.map(function(log_list){
-					
+
 						ul_content += '<li>'+log_list+'</li>';
-					
+
 					});
-					
+
 					ul_content += '</ul>';
-					
+
 					$(".td_log_files").append(ul_content);
 					$(".td_log_last_file").append(response.log.last_log.log_file);
 					$(".td_log_file_weight").append(response.log.last_log.log_weight);
@@ -88,30 +86,29 @@ $( document ).ready(function() {
 			{
 				$(".status-label").removeClass("label-success2");
 				$(".status-label").removeClass("label-danger2");
-				
+
 				$(".status-label").addClass("label-danger2");
 				$(".status-label").append("ERROR");
-				
+
 				$(".error_detail_content").append('<pre><code>'+response.msg+'</code></pre>');
-				
+
 				$("#row_error_message").show();
 				$("#row_error_detail").show();
-				
+
 			}
-			
+
 		},'json');
-		
+
 	});
-	
+
 	$('#tb_modal').on('shown.bs.modal', function (e) {
-		
+
 		$("#row_response_url").hide();
 		$("#row_response_token").hide();
 		$("#row_error_message").hide();
 		$("#row_error_detail").hide();
 		$("#row_response_status").hide();
-		
-	});
-	
-});
 
+	});
+
+});
