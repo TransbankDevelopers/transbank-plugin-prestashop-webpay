@@ -7,7 +7,7 @@
  * @version    3.0.6
  */
 require_once(__DIR__.'/soap/lib/nusoap.php');
-require_once(__DIR__.'/WebpayNormal.php');
+require_once(__DIR__.'/TransbankSdkWebpay.php');
 require_once(__DIR__.'/WebpayConfig.php');
 
 /**
@@ -309,7 +309,7 @@ class HealthCheck {
 
     private function setInitTransaction(){
 
-        $this->webpay = new WebpayNormal($this->webpayconfig);
+        $this->webpay = new TransbankSdkWebpay($this->webpayconfig);
         $amount = 990;
         $buyOrder = "_Healthcheck_";
         $sessionId = uniqid();
