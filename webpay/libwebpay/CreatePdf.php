@@ -1,7 +1,7 @@
 <?php
 require_once('../../../config/config.inc.php');
-if (!defined('_PS_VERSION_'))
-    exit;
+if (!defined('_PS_VERSION_')) exit;
+
 require_once('ReportPdfLog.php');
 require_once('HealthCheck.php');
 
@@ -14,7 +14,7 @@ $arg = array('MODO' => $_POST["ambient"],
             'ECOMMERCE' => 'prestashop');
 $document = $_POST["document"];
 $healthcheck = new HealthCheck($arg);
-@$json = $healthcheck->printFullResume();
+$json = $healthcheck->printFullResume();
 $rl = new reportPDFlog($ecommerce, $document);
 $temp = json_decode($json);
 if ($document == "report"){
