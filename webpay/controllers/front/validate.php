@@ -200,4 +200,3 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
                 ."</script>";
     }
 }
-?>

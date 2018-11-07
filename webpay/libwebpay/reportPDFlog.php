@@ -2,17 +2,14 @@
 require_once('LogHandler.php');
 require_once('ReportPdf.php');
 
-class reportPDFlog {
+class ReportPdfLog {
 
-    private $ecommerce;
-
-    function reportPDFlog($ecommerce, $document){
-        $this->ecommerce = $ecommerce;
+    function __construct($document){
         $this->document = $document;
     }
 
     function getReport($myJSON){
-        $log = new LogHandler($this->ecommerce);
+        $log = new LogHandler();
         $json = json_decode($log->getLastLog(),true);
 
         $obj = json_decode($myJSON,true);
@@ -28,7 +25,7 @@ class reportPDFlog {
             $obj += array('logs' => array('log' => $html));
         }
 
-        $report = new reportPDF();
+        $report = new ReportPdf();
         $report->getReport(json_encode($obj));
     }
 }

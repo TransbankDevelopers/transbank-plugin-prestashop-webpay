@@ -6,9 +6,7 @@
  * @license    GNU LGPL
  * @version    3.0.6
  */
-require_once(__DIR__.'/soap/lib/nusoap.php');
-require_once(__DIR__.'/TransbankSdkWebpay.php');
-require_once(__DIR__.'/WebpayConfig.php');
+require_once('TransbankSdkWebpay.php');
 
 /**
  * NOTE:llamar clase igual que archivo fisico
@@ -27,27 +25,25 @@ class HealthCheck {
     var $fullResume;
     var $certficados;
     var $ecommerce;
-    var $listEcommerce;
-    var $nusoap;
+    //var $listEcommerce;
+    //var $nusoap;
     var $webpay;
     var $webpayconfig;
     var $testurl;
+    var $config;
 
-    function __construct($args)  {
-        $this->environment = $args['MODO'];
-        $this->commerceCode = $args['COMMERCE_CODE'];
-        $this->publicCert = $args['PUBLIC_CERT'];
-        $this->privateKey = $args['PRIVATE_KEY'];
-        $this->webpayCert = $args['WEBPAY_CERT'];
-        if (empty($args['ECOMMERCE'] or $args['ECOMMERCE'] === null or !isset($args['ECOMMERCE']))) {
-            $args['ECOMMERCE'] = 'sdk';
-        }
-        $this->ecommerce = strtolower($args['ECOMMERCE']);
+    function __construct($config)  {
+        $this->config = $config;
+        $this->environment = $config['MODO'];
+        $this->commerceCode = $config['COMMERCE_CODE'];
+        $this->publicCert = $config['PUBLIC_CERT'];
+        $this->privateKey = $config['PRIVATE_KEY'];
+        $this->webpayCert = $config['WEBPAY_CERT'];
+        $this->ecommerce = $config['ECOMMERCE'];
         $this->testurl = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 
-        $args['URL_RETURN'] = $this->testurl."?action=return";
-        $args['URL_FINAL'] = $this->testurl."?action=final";
-        $this->webpayconfig = new WebPayConfig($args);
+        $config['URL_RETURN'] = $this->testurl."?action=return";
+        $config['URL_FINAL'] = $this->testurl."?action=final";
 
         $this->extensions = null;
         $this->resume = null;
@@ -64,6 +60,7 @@ class HealthCheck {
             'dom',
         );
 
+        /*
         // orden segun definicion de nusoap
         $this->listEcommerce = array(
             'prestashop' => '1',
@@ -75,6 +72,7 @@ class HealthCheck {
         );
 
         $this->nusoap = new nusoap_client("http://www.cumbregroup.com/tbk-webservice/PluginVersion.php?wsdl", true);
+        */
     }
 
     // validaciones
@@ -246,6 +244,8 @@ class HealthCheck {
     4 => OnePay
     */
     private function getPluginLastVersion($ecommerce, $currentversion){
+        return 'Indefinido';
+        /*
         $code = $this->listEcommerce[$ecommerce];
         if ( ! empty($code) ) {
             $params = array(
@@ -260,6 +260,7 @@ class HealthCheck {
             exit;
         }
         return true;
+        */
     }
 
     // lista y valida extensiones/ modulos de php en servidor ademas mostrar version
@@ -349,6 +350,8 @@ class HealthCheck {
     }
 
     private function setpostinstall(){
+        return false;
+        /*
         $commerce = $this->listEcommerce[$this->ecommerce];
         $args = $this->getEcommerceInfo($this->ecommerce);
         $env = $this->getEcommerceInfo();
@@ -367,6 +370,7 @@ class HealthCheck {
         }else{
             return true;
         }
+        */
     }
 
     //funciones de impresion
@@ -402,4 +406,3 @@ class HealthCheck {
         return json_encode($this->setpostinstall());
     }
 }
-?>

@@ -35,15 +35,15 @@ class WebPay extends PaymentModule {
 
         $this->pluginValidation();
 		$this->loadPluginConfiguration();
-		$arg = array('MODO' => $this->ambient,
+		$config = array('MODO' => $this->ambient,
 				'COMMERCE_CODE' => $this->storeID,
 				'PUBLIC_CERT' => $this->certificate,
 				'PRIVATE_KEY' => $this->secretCode,
 				'WEBPAY_CERT' => $this->certificateTransbank,
 				'ECOMMERCE' => 'prestashop');
-		$this->healthcheck = new HealthCheck($arg);
+		$this->healthcheck = new HealthCheck($config);
 		$this->datos_hc = json_decode($this->healthcheck->printFullResume());
-		$this->log = new LogHandler($arg['ECOMMERCE']);
+		$this->log = new LogHandler();
     }
 
     public function install() {

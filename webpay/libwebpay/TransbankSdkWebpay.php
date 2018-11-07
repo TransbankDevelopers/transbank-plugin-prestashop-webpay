@@ -1,6 +1,6 @@
 <?php
 require_once(_PS_MODULE_DIR_.'webpay/vendor/transbank/transbank-sdk/init.php');
-require_once(_PS_MODULE_DIR_.'webpay/libwebpay/LogHandler.php');
+require_once('LogHandler.php');
 
 use Transbank\Webpay\Configuration;
 use Transbank\Webpay\Webpay;
@@ -56,4 +56,3 @@ class TransbankSdkWebpay {
         return $this->transaction->getTransactionResult($tokenWs);
     }
 }
-?>

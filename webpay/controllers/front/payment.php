@@ -70,4 +70,3 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
         $this->setTemplate('module:webpay/views/templates/front/payment_execution.tpl');
     }
 }
-?>

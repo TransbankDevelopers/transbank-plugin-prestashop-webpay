@@ -2,14 +2,14 @@
 
 require_once(_PS_MODULE_DIR_.'webpay/vendor/tecnickcom/tcpdf/tcpdf.php');
 
-class reportPDF {
+class ReportPdf {
 
     var $buffer;
 
-    function reportPDF(){
+    function __construct(){
         $this->buffer='<html>
                         <head>
-                            <link href="'.__DIR__.'/css/reportPDF.css" rel="stylesheet" type="text/css" media="all" />
+                            <link href="'.__DIR__.'/css/ReportPdf.css" rel="stylesheet" type="text/css" media="all" />
                         </head>
                         <body>';
     }
@@ -58,7 +58,7 @@ class reportPDF {
     }
 
     public function getReport($myJSON){
-        $obj = json_decode($myJSON,true);
+        $obj = json_decode($myJSON, true);
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetPrintHeader(false);

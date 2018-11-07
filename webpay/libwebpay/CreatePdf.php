@@ -4,23 +4,25 @@ if (!defined('_PS_VERSION_')) exit;
 
 require_once('ReportPdfLog.php');
 require_once('HealthCheck.php');
+require_once('LogHandler.php');
 
-$ecommerce = 'prestashop';
-$arg = array('MODO' => $_POST["ambient"],
+$config = array('MODO' => $_POST["ambient"],
             'COMMERCE_CODE' => $_POST["storeID"],
             'PUBLIC_CERT' => $_POST["certificate"],
             'PRIVATE_KEY' => $_POST["secretCode"],
             'WEBPAY_CERT' => $_POST["certificateTransbank"],
             'ECOMMERCE' => 'prestashop');
+
 $document = $_POST["document"];
-$healthcheck = new HealthCheck($arg);
+$healthcheck = new HealthCheck($config);
 $json = $healthcheck->printFullResume();
-$rl = new reportPDFlog($ecommerce, $document);
+
 $temp = json_decode($json);
 if ($document == "report"){
     unset($temp->php_info);
 } else {
     $temp = array('php_info' => $temp->php_info);
 }
-$json = json_encode($temp);
-$rl->getReport($json);
+
+$rl = new ReportPdfLog($document);
+$rl->getReport(json_encode($temp));
