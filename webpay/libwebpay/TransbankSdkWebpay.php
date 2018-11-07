@@ -1,5 +1,6 @@
 <?php
 require_once(_PS_MODULE_DIR_.'webpay/vendor/transbank/transbank-sdk/init.php');
+require_once(_PS_MODULE_DIR_.'webpay/libwebpay/LogHandler.php');
 
 use Transbank\Webpay\Configuration;
 use Transbank\Webpay\Webpay;
@@ -11,13 +12,18 @@ class TransbankSdkWebpay {
     function __construct($config) {
         $environment = isset($config["MODO"]) ? $config["MODO"] : 'INTEGRACION';
         $configuration = Configuration::forTestingWebpayPlusNormal();
+        $this->log = new LogHandler();
         if ($environment != Webpay::INTEGRACION) {
             $configuration = new Configuration();
             $configuration->setEnvironment(Webpay::PRODUCCION);
             $configuration->setCommerceCode($config["COMMERCE_CODE"]);
             $configuration->setPrivateKey($config["PRIVATE_KEY"]);
             $configuration->setPublicCert($config["PUBLIC_CERT"]);
-            $configuration->setWebpayCert(Webpay::defaultCert(Webpay::PRODUCCION));
+            if (trim($config["WEBPAY_CERT"]) != '') {
+                $configuration->setWebpayCert($config["WEBPAY_CERT"]);
+            } else {
+                $configuration->setWebpayCert(Webpay::defaultCert(Webpay::PRODUCCION));
+            }
         }
         $this->transaction = (new Webpay($configuration))->getNormalTransaction();
     }
