@@ -14,7 +14,7 @@ define('Webpay_ROOT', dirname(__DIR__));
 class LogHandler {
 
     //constants for log handler
-    const LOG_DEBUG_ENABLED = true; //enable or disable debug logs
+    const LOG_DEBUG_ENABLED = false; //enable or disable debug logs
     const LOG_INFO_ENABLED = true; //enable or disable info logs
     const LOG_ERROR_ENABLED = true; //enable or disable error logs
 

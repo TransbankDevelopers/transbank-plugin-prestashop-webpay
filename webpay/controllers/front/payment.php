@@ -32,13 +32,13 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
         try {
 
             $amount = $cart->getOrderTotal(true, Cart::BOTH);
-            $sessionId = intval(microtime(true));
+            $sessionId = uniqid();
             $buyOrder = $cart->id;
             $returnUrl = $config['URL_RETURN'];
             $finalUrl = $config['URL_FINAL'];
 
             $transbankSdkWebpay = new TransbankSdkWebpay($config);
-            $result = $transbankSdkWebpay->createTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
+            $result = $transbankSdkWebpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
 
         } catch(Exception $e) {
             $result["error"] = "Error conectando a Webpay";

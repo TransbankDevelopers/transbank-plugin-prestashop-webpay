@@ -47,7 +47,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
         }
 
         if ($cart->id == null) {
-            $this->log->logInfo('validateData - 1');
             $id_usuario = Context::getContext()->customer->id;
             $sql = "SELECT id_cart FROM ps_cart p WHERE p.id_customer = $id_usuario ORDER BY p.id_cart DESC";
             $id_carro = Db::getInstance()->getValue($sql, $use_cache = true);
@@ -58,7 +57,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
         }
 
         if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 || !$this->module->active) {
-            $this->log->logInfo('validateData - 2');
             Tools::redirect('index.php?controller=order&step=1');
             return false;
         }
@@ -66,7 +64,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
         $customer = new Customer($cart->id_customer);
 
         if (!Validate::isLoadedObject($customer)) {
-            $this->log->logInfo('validateData - 3');
             Tools::redirect('index.php?controller=order&step=1');
             return false;
         }
@@ -75,7 +72,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
     }
 
 	private function processPayment($data) {
-        $this->log->logInfo('processPayment');
 
         $cart = Context::getContext()->cart;
 

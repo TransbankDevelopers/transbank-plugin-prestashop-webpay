@@ -25,9 +25,6 @@ class HealthCheck {
     var $fullResume;
     var $certficados;
     var $ecommerce;
-    //var $listEcommerce;
-    //var $nusoap;
-    var $webpay;
     var $webpayconfig;
     var $testurl;
     var $config;
@@ -59,20 +56,6 @@ class HealthCheck {
             'mcrypt',
             'dom',
         );
-
-        /*
-        // orden segun definicion de nusoap
-        $this->listEcommerce = array(
-            'prestashop' => '1',
-            'magento' => '2',
-            'opencart' => '3',
-            'woocommerce' => '4',
-            'virtuemart' => '5',
-            'sdk' => '6'
-        );
-
-        $this->nusoap = new nusoap_client("http://www.cumbregroup.com/tbk-webservice/PluginVersion.php?wsdl", true);
-        */
     }
 
     // validaciones
@@ -178,26 +161,6 @@ class HealthCheck {
         return $version;
     }
 
-    // obtiene ultima version exclusivamente para virtuemart
-    // NOTE: lastrelasevirtuemart
-    private function getLastVirtuemartVersion(){
-        $request_url ='http://virtuemart.net/releases/vm3/virtuemart_update.xml';
-
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $request_url);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 130);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        $xml = simplexml_load_string($response);
-        $json = json_encode($xml);
-        $arr = json_decode($json,true);
-        $version = $arr['update']['version'];
-        return $version;
-    }
-
     // funcion para obtener info de cada ecommerce, si el ecommerce es incorrecto o no esta seteado se escapa como respuesta "NO APLICA"
     private function getEcommerceInfo($ecommerce){
         if (!defined('_PS_VERSION_')){
@@ -245,22 +208,6 @@ class HealthCheck {
     */
     private function getPluginLastVersion($ecommerce, $currentversion){
         return 'Indefinido';
-        /*
-        $code = $this->listEcommerce[$ecommerce];
-        if ( ! empty($code) ) {
-            $params = array(
-                'ecommerce_cod' => $code,
-                'version_ec' => $currentversion,
-                'version_pr' => '1'
-            );
-            $result = $this->nusoap->call('getVersion', $params);
-            return $result;
-        }else{
-            echo "error!: ecommerce no declarado";
-            exit;
-        }
-        return true;
-        */
     }
 
     // lista y valida extensiones/ modulos de php en servidor ademas mostrar version
@@ -309,30 +256,28 @@ class HealthCheck {
     }
 
     private function setInitTransaction(){
-
-        $this->webpay = new TransbankSdkWebpay($this->webpayconfig);
+        $webpay = new TransbankSdkWebpay($this->config);
         $amount = 990;
         $buyOrder = "_Healthcheck_";
         $sessionId = uniqid();
-        $url = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
-        $this->result = $this->webpay->initTransaction($amount,$sessionId,$buyOrder, $url);
+        $returnUrl = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
+        $finalUrl = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
+        $this->result = $webpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
         if ($this->result) {
             if (!empty($this->result["error"]) && isset($this->result["error"])) {
-            $status = 'Error';
+                $status = 'Error';
             }else{
-            $status = 'OK';
+                $status = 'OK';
             }
         } else {
             if (array_key_exists('error', $this->result)) {
-            $status =  "Error";
+                $status =  "Error";
             }
         }
-
         $response = array(
             'status' => array('string' => $status),
             'response' => preg_replace('/<!--(.*)-->/Uis', '', $this->result)
         );
-
         return $response;
     }
 
@@ -351,26 +296,6 @@ class HealthCheck {
 
     private function setpostinstall(){
         return false;
-        /*
-        $commerce = $this->listEcommerce[$this->ecommerce];
-        $args = $this->getEcommerceInfo($this->ecommerce);
-        $env = $this->getEcommerceInfo();
-        $vars = array('cod_commerce' => $this->commerceCode,
-            'version_plugin' =>$args['current_plugin_version'],
-            'version_ecommerce' =>$args['current_ecommerce_version'],
-            'ecommerce' =>$commerce,
-            'ambient' => $env['data']['environment'],
-            'product' =>'1'
-        );
-
-        $this->result = $this->nusoap->call('version_register', $vars);
-
-        if (strpos($this->result, 'Error') === true) {
-            return false;
-        }else{
-            return true;
-        }
-        */
     }
 
     //funciones de impresion

@@ -4,14 +4,15 @@ if (!defined('_PS_VERSION_')) exit;
 
 require_once('ReportPdfLog.php');
 require_once('HealthCheck.php');
-require_once('LogHandler.php');
 
-$config = array('MODO' => $_POST["ambient"],
-            'COMMERCE_CODE' => $_POST["storeID"],
-            'PUBLIC_CERT' => $_POST["certificate"],
-            'PRIVATE_KEY' => $_POST["secretCode"],
-            'WEBPAY_CERT' => $_POST["certificateTransbank"],
-            'ECOMMERCE' => 'prestashop');
+$config = array(
+    'MODO' => $_POST["ambient"],
+    'COMMERCE_CODE' => $_POST["storeID"],
+    'PUBLIC_CERT' => $_POST["certificate"],
+    'PRIVATE_KEY' => $_POST["secretCode"],
+    'WEBPAY_CERT' => $_POST["certificateTransbank"],
+    'ECOMMERCE' => 'prestashop'
+);
 
 $document = $_POST["document"];
 $healthcheck = new HealthCheck($config);

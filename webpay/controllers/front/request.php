@@ -10,16 +10,16 @@ $type = $_POST['type'];
 if ($type == 'checkInit') {
     try {
 
-        $arg = [
+        $config = array(
             'MODO' => $_POST['MODE'],
             'COMMERCE_CODE'	=> $_POST['C_CODE'],
             'PUBLIC_CERT' => $_POST['PUBLIC_CERT'],
             'PRIVATE_KEY' => $_POST['PRIVATE_KEY'],
             'WEBPAY_CERT' => $_POST['WEBPAY_CERT'],
             'ECOMMERCE' => 'prestashop'
-        ];
+        );
 
-        $healthcheck = new HealthCheck($arg);
+        $healthcheck = new HealthCheck($config);
         $response = $healthcheck->getInitTransaction();
 
         $log = new LogHandler();

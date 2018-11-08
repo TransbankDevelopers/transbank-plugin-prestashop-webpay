@@ -25,7 +25,7 @@ El plugin depende de las siguientes librerías:
 Para cumplir estas dependencias, debes instalar [Composer](https://getcomposer.org), e instalarlas con el comando `composer install`.
 
 ## Nota  
-- La versión del sdk de php se encuentra en el archivo `composer.json`
+- La versión del sdk de php se encuentra en el archivo `webpay/composer.json`
 
 ## Desarrollo
 
