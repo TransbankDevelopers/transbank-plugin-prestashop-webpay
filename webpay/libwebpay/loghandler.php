@@ -46,7 +46,9 @@ class LogHandler {
         $this->logFile = "{$this->logDir}/log_transbank_{$this->ecommerce}_{$dia}.log";
 
         try {
-            mkdir($this->logDir, 0777, true);
+            if (!file_exists($this->logDir)) {
+                mkdir($this->logDir, 0777, true);
+            }
         } catch(Exception $e) {
         }
 
