@@ -45,6 +45,11 @@ class LogHandler {
         $this->logDir = _PS_ROOT_DIR_."/var/logs/Transbank_webpay";
         $this->logFile = "{$this->logDir}/log_transbank_{$this->ecommerce}_{$dia}.log";
 
+        try {
+            mkdir($this->logDir, 0777, true);
+        } catch(Exception $e) {
+        }
+
         $this->configuration = array(
             'appenders' => array(
                 'default' => array(
