@@ -4,11 +4,7 @@ Plugin oficial de Prestashop para Webpay
 
 ## Descripción
 
-Este plugin de Prestashop implementa el [SDK PHP de Webpay](https://github.com/TransbankDevelopers/transbank-sdk-php). 
-
-## Instalación
-El manual de instalación para el usuario final se encuentra disponible [acá](docs/INSTALLATION.md), y además puedes descargarlo como PDF desde [acá](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/raw/master/docs/INSTALLATION.pdf
-)
+Este plugin de Prestashop implementa el [SDK PHP de Webpay](https://github.com/TransbankDevelopers/transbank-sdk-php).
 
 ## Requisitos 
 * PHP 5.6 o superior
