@@ -27,7 +27,8 @@ Para cumplir estas dependencias, debes instalar [Composer](https://getcomposer.o
 
 Para apoyar el levantamiento rápido de un ambiente de desarrollo, hemos creado la especificación de contenedores a través de Docker Compose.
 
-Para usarlo seguir el siguiente [README Prestashop 1.7](./docker-prestashop1)
+Para usarlo seguir el siguiente [README Prestashop 1.7 con php 5.6](./docker-prestashop1.7-php5.6)  
+Para usarlo seguir el siguiente [README Prestashop 1.7 con php 7.0](./docker-prestashop1.7-php7.0)
 
 ## Generar una nueva versión
 
