@@ -1,11 +1,4 @@
 <?php
-/**
- * @author     Allware Ltda. (http://www.allware.cl)
- * @copyright  2018 Transbank S.A. (http://www.transbank.cl)
- * @date       Aug 2018
- * @license    GNU LGPL
- * @version    3.0.6
- */
 require_once('TransbankSdkWebpay.php');
 
 /**

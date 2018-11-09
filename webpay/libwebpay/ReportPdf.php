@@ -1,5 +1,4 @@
 <?php
-
 require_once(_PS_MODULE_DIR_.'webpay/vendor/tecnickcom/tcpdf/tcpdf.php');
 
 class ReportPdf {
