@@ -29,7 +29,8 @@
 			<label for="certificate">{l s='Certificado' mod='webpay'}</label>
 			<div class="margin-form"><textarea style="font-family: monospace" cols="90" rows="6" wrap="soft" id="certificate" name="certificate" value="{$data_certificate|escape:'htmlall':'UTF-8'}"/>{$data_certificate|escape:'htmlall':'UTF-8'}</textarea></div>
 			<br/>
-			<label for="certificateTransbank">{l s='Certificado Transbank' mod='webpay'}</label>
+            <label for="certificateTransbank">{l s='Certificado Transbank' mod='webpay'}</label>
+            <label style="font-weight: normal; font-style: italic;">(Opcional, puede dejarse en blanco, en ese caso se usará el predeterminado por el plugin)</label>
 			<div class="margin-form"><textarea style="font-family: monospace" cols="90" rows="6" wrap="soft" id="certificateTransbank" name="certificateTransbank" value="{$data_certificatetransbank|escape:'htmlall':'UTF-8'}"/>{$data_certificatetransbank|escape:'htmlall':'UTF-8'}</textarea></div>
 			<br/>
 			<label for="ambient">{l s='Ambiente' mod='webpay'}</label>
@@ -41,7 +42,6 @@
 						cargaDatosProduccion();
 					}" default="INTEGRACION">
 					<option value="INTEGRACION" {if $data_ambient eq "INTEGRACION"}selected{/if}>Integracion</option>
-					<!-- <option value="CERTIFICACION" {if $data_ambient eq "CERTIFICACION"}selected{/if}>Certificacion</option> -->
 					<option value="PRODUCCION" {if $data_ambient eq "PRODUCCION"}selected{/if}>Produccion</option>
 				</select>
 			</div>
@@ -356,9 +356,6 @@
 		<script type="text/javascript">
 
 			function swap_action(){
-
-				//AJAX CALL
-
 				$.ajax({
 					type:'POST',
 					url:'../modules/webpay/libwebpay/call_LogHandler.php',
@@ -367,17 +364,14 @@
 						days:$("#days").val(),
 						size:$("#size").val()
 					},
-					success:function(response){
+					success:function(response) {
 
-						if(response.success)
-						{
+						if(response.success) {
 							//actualiza contenido
-							if (document.getElementById("action_check").checked)
-							{
+							if (document.getElementById("action_check").checked) {
 								document.getElementById('action_txt').innerHTML = 'Registro activado';
 								$('#action_txt').removeClass("label-warning").addClass("label-success2");
-							}
-							else{
+							} else{
 								document.getElementById('action_txt').innerHTML = 'Registro desactivado';
 								$('#action_txt').removeClass("label-success2").addClass("label-warning");
 							}
@@ -389,16 +383,13 @@
 							$(".td_log_file_weight").empty();
 							$(".td_log_regs_lines").empty();
 							$(".log_content").empty();
-
 							$(".td_log_dir").append(response.log.log_dir);
 							$(".td_log_count").append(response.log.logs_count.log_count);
 
 							var ul_content = '<ul style="font-size:0.8em;">';
 
 							response.log.logs_list.map(function(log_list){
-
 								ul_content += '<li>'+log_list+'</li>';
-
 							});
 
 							ul_content += '</ul>';
@@ -408,10 +399,7 @@
 							$(".td_log_file_weight").append(response.log.last_log.log_weight);
 							$(".td_log_regs_lines").append(response.log.last_log.log_regs_lines);
 							$(".log_content").append(response.log.last_log.log_content);
-
-
 						}
-
 					},
 					dataType:'json'
 				});

@@ -7,35 +7,26 @@ require_once(_PS_MODULE_DIR_.'webpay/libwebpay/LogHandler.php');
 
 $type = $_POST['type'];
 
-switch($type) {
+if ($type == 'checkInit') {
+    try {
 
-    case 'checkInit':
-
-        $response = [];
-
-        $arg = [
-            'MODO' 			=> $_POST['MODE'],
+        $config = array(
+            'MODO' => $_POST['MODE'],
             'COMMERCE_CODE'	=> $_POST['C_CODE'],
-            'PUBLIC_CERT'   => $_POST['PUBLIC_CERT'],
-            'PRIVATE_KEY'	=> $_POST['PRIVATE_KEY'],
-            'WEBPAY_CERT'	=> $_POST['WEBPAY_CERT'],
-            'ECOMMERCE'     => 'prestashop'
-        ];
+            'PUBLIC_CERT' => $_POST['PUBLIC_CERT'],
+            'PRIVATE_KEY' => $_POST['PRIVATE_KEY'],
+            'WEBPAY_CERT' => $_POST['WEBPAY_CERT'],
+            'ECOMMERCE' => 'prestashop'
+        );
 
-        $healthcheck = new HealthCheck($arg);
+        $healthcheck = new HealthCheck($config);
+        $response = $healthcheck->getInitTransaction();
 
-        try {
+        $log = new LogHandler();
+        $logHandler = json_decode($log->getResume(), true);
 
-            $response = $healthcheck->getInitTransaction();
-
-            $log = new LogHandler('prestashop');
-            $logHandler = json_decode($log->getResume(), true);
-
-            echo json_encode(['success' => true, 'msg' => json_decode($response), 'log' => $logHandler]);
-        } catch (Exception $e) {
-            echo json_encode(['success' => false, 'msg' => $e->getMessage()]);
-        }
-
-    break;
+        echo json_encode(['success' => true, 'msg' => json_decode($response), 'log' => $logHandler]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'msg' => $e->getMessage()]);
+    }
 }
-

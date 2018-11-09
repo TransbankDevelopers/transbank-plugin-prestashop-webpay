@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: "prestashop/prestashop:1.7"
+    image: "prestashop/prestashop:1.7-7.1-apache"
     container_name: "webpay_prestashop"
     environment:
       - PS_LANGUAGE=es
@@ -22,8 +22,6 @@ services:
       - mariadb:mariadb
     depends_on:
       - mariadb
-    #volumes:
-    #  - ../webpay:/var/www/html/modules/webpay
   mariadb:
     image: mariadb
     container_name: webpay_mariadb

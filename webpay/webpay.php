@@ -14,6 +14,7 @@ class WebPay extends PaymentModule {
 	var $log;
 
     public function __construct() {
+
         $this->name = 'webpay';
         $this->tab = 'payments_gateways';
         $this->version = '3.0.6';
@@ -34,16 +35,20 @@ class WebPay extends PaymentModule {
         $this->loadIntegrationCertificates();
 
         $this->pluginValidation();
-		$this->loadPluginConfiguration();
-		$arg = array('MODO' => $this->ambient,
-				'COMMERCE_CODE' => $this->storeID,
-				'PUBLIC_CERT' => $this->certificate,
-				'PRIVATE_KEY' => $this->secretCode,
-				'WEBPAY_CERT' => $this->certificateTransbank,
-				'ECOMMERCE' => 'prestashop');
-		$this->healthcheck = new HealthCheck($arg);
+        $this->loadPluginConfiguration();
+
+		$config = array(
+            'MODO' => $this->ambient,
+            'COMMERCE_CODE' => $this->storeID,
+            'PUBLIC_CERT' => $this->certificate,
+            'PRIVATE_KEY' => $this->secretCode,
+            'WEBPAY_CERT' => $this->certificateTransbank,
+            'ECOMMERCE' => 'prestashop'
+        );
+
+        $this->healthcheck = new HealthCheck($config);
 		$this->datos_hc = json_decode($this->healthcheck->printFullResume());
-		$this->log = new LogHandler($arg['ECOMMERCE']);
+		$this->log = new LogHandler();
     }
 
     public function install() {
@@ -102,18 +107,15 @@ class WebPay extends PaymentModule {
         if (!$this->checkCurrency($params['cart'])) {
             return;
         }
-
         $payment_options = [
             $this->getWPPaymentOption()
         ];
-
         return $payment_options;
     }
 
     public function checkCurrency($cart) {
         $currency_order = new Currency($cart->id_currency);
         $currencies_module = $this->getCurrency($cart->id_currency);
-
         if (is_array($currencies_module)) {
             foreach ($currencies_module as $currency_module) {
                 if ($currency_order->id == $currency_module['id_currency']) {
@@ -126,10 +128,8 @@ class WebPay extends PaymentModule {
 
     public function getWPPaymentOption() {
        $WPOption = new PaymentOption();
-
        $paymentController = $this->context->link->getModuleLink($this->name,'payment',array(),true);
        $WPOption->setCallToActionText($this->l('Pago con Tarjetas de Credito o Redcompra'))->setAction($paymentController);
-
        return $WPOption;
     }
 
@@ -160,14 +160,16 @@ class WebPay extends PaymentModule {
             $this->loadPluginConfiguration();
         }
 
-        $arg =  array('MODO' => $this->ambient,
-                    'COMMERCE_CODE' => $this->storeID,
-                    'PUBLIC_CERT' => $this->certificate,
-                    'PRIVATE_KEY' => $this->secretCode,
-                    'WEBPAY_CERT' => $this->certificateTransbank,
-                    'ECOMMERCE' => 'prestashop');
+        $config = array(
+            'MODO' => $this->ambient,
+            'COMMERCE_CODE' => $this->storeID,
+            'PUBLIC_CERT' => $this->certificate,
+            'PRIVATE_KEY' => $this->secretCode,
+            'WEBPAY_CERT' => $this->certificateTransbank,
+            'ECOMMERCE' => 'prestashop'
+        );
 
-        $this->healthcheck = new HealthCheck($arg);
+        $this->healthcheck = new HealthCheck($config);
         if ($change) {
             $rs = $this->healthcheck->getpostinstallinfo();
         }

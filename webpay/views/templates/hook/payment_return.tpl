@@ -2,8 +2,8 @@
 {if ($WEBPAY_TX_ANULADA == "SI")}
     <p class="alert alert-danger">La Transaccion fue Anulada por el Cliente.</p>
 {else}
-    {if ($WEBPAY_RESULT_CODE === '0')}
-        <p class="alert alert-success">{l s='Su pedido está completo.'  mod='webpay'}</p>
+    {if ($WEBPAY_RESULT_CODE == 0)}
+        <p class="alert alert-success">{l s='Su pedido está completo.' mod='webpay'}</p>
         <div class="box order-confirmation">
             <h3 class="page-subheading">Detalles del pago :</h3>
             <p>

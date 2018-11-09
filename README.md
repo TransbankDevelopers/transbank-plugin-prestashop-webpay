@@ -4,11 +4,7 @@ Plugin oficial de Prestashop para Webpay
 
 ## Descripción
 
-Este plugin de Prestashop implementa el [SDK PHP de Webpay](https://github.com/TransbankDevelopers/transbank-sdk-php). 
-
-## Instalación
-El manual de instalación para el usuario final se encuentra disponible [acá](docs/INSTALLATION.md), y además puedes descargarlo como PDF desde [acá](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/raw/master/docs/INSTALLATION.pdf
-)
+Este plugin de Prestashop implementa el [SDK PHP de Webpay](https://github.com/TransbankDevelopers/transbank-sdk-php).
 
 ## Requisitos 
 * PHP 5.6 o superior
@@ -25,13 +21,18 @@ El plugin depende de las siguientes librerías:
 Para cumplir estas dependencias, debes instalar [Composer](https://getcomposer.org), e instalarlas con el comando `composer install`.
 
 ## Nota  
-- La versión del sdk de php se encuentra en el archivo `composer.json`
+- La versión del sdk de php se encuentra en el archivo `webpay/composer.json`
 
 ## Desarrollo
 
 Para apoyar el levantamiento rápido de un ambiente de desarrollo, hemos creado la especificación de contenedores a través de Docker Compose.
 
-Para usarlo seguir el siguiente [README Prestashop 1.7](./docker-prestashop1)
+Para usarlo seguir el siguiente [README Prestashop 1.7 con php 5.6](./docker-prestashop1.7-php5.6)  
+Para usarlo seguir el siguiente [README Prestashop 1.7 con php 7.1](./docker-prestashop1.7-php7.1)
+
+### Crear el instalador del plugin
+
+    ./package.sh
 
 ## Generar una nueva versión
 
