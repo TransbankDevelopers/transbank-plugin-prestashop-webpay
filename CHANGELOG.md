@@ -6,8 +6,9 @@ y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.ht
 
 ## [3.0.7] - 2018-11-09
 ### Changed
-- Se corrigen varios problemas internos del plugin para entregar una mejor experiencia en prestashop con webpay.
-- Ahora el certificado de transbank webpay es opcional.
+- Se corrigen varios problemas internos del plugin para entregar una mejor experiencia en prestashop con Webpay.
+- Ahora el certificado de transbank Webpay es opcional.
+- Ahora soporta php 7.1
 
 ## [3.0.6] - 2018-08-24
 ### Changed
