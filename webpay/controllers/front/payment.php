@@ -4,6 +4,7 @@ if (!defined('_PS_VERSION_')) exit;
 
 require_once(_PS_MODULE_DIR_.'webpay/libwebpay/TransbankSdkWebpay.php');
 require_once(_PS_MODULE_DIR_.'webpay/libwebpay/LogHandler.php');
+require_once(_PS_MODULE_DIR_.'webpay/libwebpay/Utils.php');
 
 class WebPayPaymentModuleFrontController extends ModuleFrontController {
 
@@ -15,7 +16,7 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
 
         $cart = $this->context->cart;
 
-        $this->log = new LogHandler();
+        $log = new LogHandler();
 
         $order = new Order(Order::getOrderByCartId($cart->id));
 
@@ -67,6 +68,10 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
             'amount' => $cart->getOrderTotal(true, Cart::BOTH)
         ));
 
-        $this->setTemplate('module:webpay/views/templates/front/payment_execution.tpl');
+        if (Utils::isPrestashop_1_6()) {
+            $this->setTemplate('payment_execution_1.6.tpl');
+        } else {
+            $this->setTemplate('module:webpay/views/templates/front/payment_execution.tpl');
+        }
     }
 }

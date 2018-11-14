@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     image: "prestashop/prestashop:1.7"
-    container_name: "webpay_prestashop"
+    container_name: "webpay_prestashop_1.7-5.6"
     environment:
       - PS_LANGUAGE=es
       - PS_INSTALL_AUTO=1
@@ -15,7 +15,7 @@ services:
       - PS_FOLDER_INSTALL=installop
       - PS_COUNTRY=cl
       - DB_NAME=prestashop
-      - DB_SERVER=webpay_mariadb
+      - DB_SERVER=webpay_mariadb_1.7-5.6
     ports:
       - "8080:80"
     links:
@@ -24,7 +24,7 @@ services:
       - mariadb
   mariadb:
     image: mariadb
-    container_name: webpay_mariadb
+    container_name: webpay_mariadb_1.7-5.6
     expose:
       - "3306"
     environment:

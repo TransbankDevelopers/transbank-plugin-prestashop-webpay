@@ -1,11 +1,10 @@
 <?php
-use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
-
 if (!defined('_PS_VERSION_'))
     exit;
 
 require_once('libwebpay/HealthCheck.php');
 require_once('libwebpay/LogHandler.php');
+require_once('libwebpay/Utils.php');
 
 class WebPay extends PaymentModule {
 
@@ -72,13 +71,13 @@ class WebPay extends PaymentModule {
         if (!$this->active)
             return;
 
-        $state = $params['order']->getCurrentState();
+        $nameOrderRef = isset($params['order']) ? 'order' : 'objOrder';
 
         $this->smarty->assign(array(
             'shop_name' => $this->context->shop->name,
-            'total_to_pay' =>  $params['order']->getOrdersTotalPaid(),
+            'total_to_pay' =>  $params[$nameOrderRef]->getOrdersTotalPaid(),
             'status' => 'ok',
-            'id_order' => $params['order']->id,
+            'id_order' => $params[$nameOrderRef]->id,
             'WEBPAY_RESULT_DESC' => Context::getContext()->cookie->WEBPAY_RESULT_DESC,
             'WEBPAY_VOUCHER_NROTARJETA' => Context::getContext()->cookie->WEBPAY_VOUCHER_NROTARJETA,
             'WEBPAY_VOUCHER_TXDATE_FECHA' => Context::getContext()->cookie->WEBPAY_VOUCHER_TXDATE_FECHA,
@@ -93,11 +92,23 @@ class WebPay extends PaymentModule {
             'WEBPAY_TX_ANULADA' => Context::getContext()->cookie->WEBPAY_TX_ANULADA
         ));
 
-        if (isset($params['order']->reference) && !empty($params['order']->reference)) {
-            $this->smarty->assign('reference', $params['order']->reference);
+        if (isset($params[$nameOrderRef]->reference) && !empty($params[$nameOrderRef]->reference)) {
+            $this->smarty->assign('reference', $params[$nameOrderRef]->reference);
         }
 
         return $this->display(__FILE__, 'views/templates/hook/payment_return.tpl');
+    }
+
+    public function hookPayment($params) {
+        if (!$this->active) {
+            return;
+        }
+        $title = Context::getContext()->cookie->WEBPAY_TITLE;
+        Context::getContext()->smarty->assign(array(
+            'logo' => "https://www.transbank.cl/public/img/LogoWebpay.png",
+            'title' => $title
+        ));
+        return $this->display(__FILE__, 'views/templates/hook/payment.tpl');
     }
 
     public function hookPaymentOptions($params) {
@@ -127,7 +138,7 @@ class WebPay extends PaymentModule {
     }
 
     public function getWPPaymentOption() {
-       $WPOption = new PaymentOption();
+       $WPOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
        $paymentController = $this->context->link->getModuleLink($this->name,'payment',array(),true);
        $WPOption->setCallToActionText($this->l('Pago con Tarjetas de Credito o Redcompra'))->setAction($paymentController);
        return $WPOption;
