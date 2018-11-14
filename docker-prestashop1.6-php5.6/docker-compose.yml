@@ -1,8 +1,8 @@
 version: '3'
 services:
   web:
-    image: "prestashop/prestashop:1.7-7.1-apache"
-    container_name: "webpay_prestashop_1.7-7.1"
+    image: "prestashop/prestashop:1.6.1.9"
+    container_name: webpay_prestashop_1.6-5.6
     environment:
       - PS_LANGUAGE=es
       - PS_INSTALL_AUTO=1
@@ -15,18 +15,28 @@ services:
       - PS_FOLDER_INSTALL=installop
       - PS_COUNTRY=cl
       - DB_NAME=prestashop
-      - DB_SERVER=webpay_mariadb_1.7-7.1
+      - DB_SERVER=webpay_mysql_1.6-5.6
     ports:
       - "8080:80"
     links:
-      - mariadb:mariadb
+      - mysql:mysql
     depends_on:
-      - mariadb
-  mariadb:
-    image: mariadb
-    container_name: webpay_mariadb_1.7-7.1
-    expose:
-      - "3306"
+      - mysql
+    networks:
+      - prestashop_network_1.6-5.6
+
+  mysql:
+    image: mysql:5.6
+    container_name: webpay_mysql_1.6-5.6
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_ROOT_PASSWORD=admin
+    networks:
+      - prestashop_network_1.6-5.6
+
+networks:
+  prestashop_network_1.6-5.6:
+    driver: bridge
+
