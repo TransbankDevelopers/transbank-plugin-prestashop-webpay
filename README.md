@@ -29,7 +29,7 @@ Para apoyar el levantamiento rápido de un ambiente de desarrollo, hemos creado 
 
 Para usarlo seguir el siguiente [README Prestashop 1.7 con php 5.6](./docker-prestashop1.7-php5.6)  
 Para usarlo seguir el siguiente [README Prestashop 1.7 con php 7.1](./docker-prestashop1.7-php7.1)  
-Para usarlo seguir el siguiente [README Prestashop 1.6 con php 5.6](./docker-prestashop1.7-php5.6)
+Para usarlo seguir el siguiente [README Prestashop 1.6 con php 5.6](./docker-prestashop1.6-php5.6)
 
 ### Crear el instalador del plugin
 
