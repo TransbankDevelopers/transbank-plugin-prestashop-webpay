@@ -4,6 +4,11 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.8] - 2018-11-27
+### Changed
+- Se mejora la creación del pdf de diagnóstico.
+- Se elimina la comprobación de la extención mcrypt dado que ya no es necesaria por el plugin.
+
 ## [3.0.7] - 2018-11-09
 ### Changed
 - Se corrigen varios problemas internos del plugin para entregar una mejor experiencia en prestashop con Webpay.
