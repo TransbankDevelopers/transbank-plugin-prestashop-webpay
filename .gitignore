@@ -28,3 +28,5 @@ ehthumbs_vista.db
 webpay/vendor
 
 plugin-prestashop-webpay-**
+
+webpay/composer.lock

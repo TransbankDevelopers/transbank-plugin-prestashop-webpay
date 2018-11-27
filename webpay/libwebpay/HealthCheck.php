@@ -18,11 +18,9 @@ class HealthCheck {
     var $fullResume;
     var $certficados;
     var $ecommerce;
-    var $webpayconfig;
-    var $testurl;
     var $config;
 
-    function __construct($config)  {
+    public function __construct($config) {
         $this->config = $config;
         $this->environment = $config['MODO'];
         $this->commerceCode = $config['COMMERCE_CODE'];
@@ -30,12 +28,7 @@ class HealthCheck {
         $this->privateKey = $config['PRIVATE_KEY'];
         $this->webpayCert = $config['WEBPAY_CERT'];
         $this->ecommerce = $config['ECOMMERCE'];
-        $this->testurl = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 
-        $config['URL_RETURN'] = $this->testurl."?action=return";
-        $config['URL_FINAL'] = $this->testurl."?action=final";
-
-        $this->extensions = null;
         $this->resume = null;
         $this->fullResume = null;
         $this->versioninfo = null;
@@ -46,7 +39,6 @@ class HealthCheck {
             'openssl',
             'SimpleXML',
             'soap',
-            'mcrypt',
             'dom',
         );
     }
@@ -62,22 +54,22 @@ class HealthCheck {
             if ($today >= $from and $today <= $to) {
                 $val = "OK";
             } else {
-                $val = "Error!: Certificado Invalido por Fecha";
+                $val = "Error!: Certificado Inválido por Fecha";
             }
             $this->certinfo = array(
                 'subject_commerce_code' => $var['subject']['CN'],
                 'version' => $var['version'],
-                'is_valid' =>$val,
+                'is_valid' => $val,
                 'valid_from' => date('Y-m-d H:i:s', $var['validFrom_time_t']),
                 'valid_to' => date('Y-m-d H:i:s', $var['validTo_time_t']),
             );
         } else {
             $this->certinfo = array(
-                'subject_commerce_code' => "",
-                'version' => "",
-                'is_valid' =>"",
-                'valid_from' => "",
-                'valid_to' => ""
+                'subject_commerce_code' => $this->commerceCode,
+                'version' => 'Error',
+                'is_valid' => 'Error',
+                'valid_from' => 'Error',
+                'valid_to' => 'Error',
             );
         }
         if (openssl_x509_check_private_key($this->publicCert, $this->privateKey) ) {
@@ -89,7 +81,8 @@ class HealthCheck {
             }
         } else {
             $this->certificates = array(
-                'cert_vs_private_key' => 'Error!: Certificados incosistentes'
+                'cert_vs_private_key' => 'Error!: Certificados inconsistentes',
+                'commerce_code_validate' => 'Error'
             );
         }
         return array('consistency' => $this->certificates, 'cert_info' => $this->certinfo);
@@ -255,21 +248,21 @@ class HealthCheck {
         $sessionId = uniqid();
         $returnUrl = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
         $finalUrl = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
-        $this->result = $webpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
-        if ($this->result) {
-            if (!empty($this->result["error"]) && isset($this->result["error"])) {
+        $result = $webpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
+        if ($result) {
+            if (!empty($result["error"]) && isset($result["error"])) {
                 $status = 'Error';
             }else{
                 $status = 'OK';
             }
         } else {
-            if (array_key_exists('error', $this->result)) {
+            if (array_key_exists('error', $result)) {
                 $status =  "Error";
             }
         }
         $response = array(
             'status' => array('string' => $status),
-            'response' => preg_replace('/<!--(.*)-->/Uis', '', $this->result)
+            'response' => preg_replace('/<!--(.*)-->/Uis', '', $result)
         );
         return $response;
     }
@@ -314,7 +307,7 @@ class HealthCheck {
     }
     // imprime en formato json el resumen completo
     public function printFullResume(){
-        return json_encode($this->getFullResume(), JSON_PRETTY_PRINT); // NOTE: quitar el pretty print antes de pasar a produccion
+        return json_encode($this->getFullResume());
     }
     public function getInitTransaction(){
         return json_encode($this->setInitTransaction());
