@@ -191,11 +191,6 @@
 										<td class="tbk_table_td">{$soap_version}</td>
 									</tr>
 									<tr>
-										<td style="font-weight:bold">{l s='mcrypt' mod='webpay'}</td>
-										<td><span class="label {if $openssl_status eq 'OK'}label-success2{else}label-danger2{/if}">{$mcrypt_status}</span></td>
-										<td class="tbk_table_td">{$mcrypt_version}</td>
-									</tr>
-									<tr>
 										<td style="font-weight:bold">{l s='dom' mod='webpay'}</td>
 										<td><span class="label {if $openssl_status eq 'OK'}label-success2{else}label-danger2{/if}">{$dom_status}</span></td>
 										<td class="tbk_table_td">{$dom_version}</td>

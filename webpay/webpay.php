@@ -231,8 +231,6 @@ class WebPay extends PaymentModule {
                 'SimpleXML_version' =>$this->datos_hc->php_extensions_status->SimpleXML->version,
                 'soap_status' =>$this->datos_hc->php_extensions_status->soap->status,
                 'soap_version' =>$this->datos_hc->php_extensions_status->soap->version,
-                'mcrypt_status' =>$this->datos_hc->php_extensions_status->mcrypt->status,
-                'mcrypt_version' =>$this->datos_hc->php_extensions_status->mcrypt->version,
                 'dom_status' =>$this->datos_hc->php_extensions_status->dom->status,
                 'dom_version' =>$this->datos_hc->php_extensions_status->dom->version,
                 'php_info' =>$this->datos_hc->php_info->string->content,
