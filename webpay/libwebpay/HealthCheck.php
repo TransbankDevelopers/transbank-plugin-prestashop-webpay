@@ -1,9 +1,6 @@
 <?php
 require_once('TransbankSdkWebpay.php');
 
-/**
- * NOTE:llamar clase igual que archivo fisico
- */
 class HealthCheck {
 
     var $phpinfo;
