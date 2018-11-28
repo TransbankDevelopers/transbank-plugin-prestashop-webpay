@@ -257,43 +257,39 @@
 							<!-- REGISTROS -->
 							<div id="logs" class="tab-pane fade">
 
-								<h2 class="">{l s='Configuración' mod='webpay'}</h2>
-								<form method="post" action ="../modules/webpay/libwebpay/call_LogHandler.php" id="log_form" target= "_blank">
-									<table class="table table-striped">
-										<tr>
-											<td><div title="Al activar esta opción se habilita que se guarden los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Activar Registro:" mod='webpay'} </strong></td>
-											<td class="tbk_table_td">
-												{if $lockfile}
-													<input type="checkbox" id="action_check" name="action_check" checked data-size="small" value="activate">
-												{else}
-													<input type="checkbox" id="action_check" name="action_check" data-size="small" state="false">
-												{/if}
-											</td>
-										</tr>
-									</table>
-									<script> $("[name='action_check']").bootstrapSwitch();</script>
-
-									<table class="table table-striped">
-										<tr>
-											<td><div title="Cantidad de días que se conservan los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Cantidad de Dias a Registrar" mod='webpay'}: </strong></td>
-											<td class="tbk_table_td"><input id="days" name="days" type="number" min="1" max="30" value="{$log_days}">{l s=" días"}</td>
-										</tr>
-										<tr>
-											<td><div title="Peso máximo (en Megabytes) de cada archivo que guarda los datos de las compras mediante Webpay" class="label label-info">?</div> <strong>{l s="Peso máximo de Registros" mod='webpay'}:  </strong></td>
-											<td class="tbk_table_td"><select style="width: 100px; display: initial;" id="size" name="size">
-												{for $c=1 to 10}
-													<option value="{$c}" {if $c eq $log_size}selected{/if}>{$c}</option>
-												{/for}
-											</select> {l s="Mb" mod='webpay'}</td>
-										</tr>
-									</table>
-									<div class="btn btn-primary" onclick="swap_action()"> {l s='Actualizar Parametros' mod='webpay'}</div>
-								</form>
+								<h2 class="" style="display: none;">{l s='Configuración' mod='webpay'}</h2>
+                                <table class="table table-striped" style="display: none;">
+                                    <tr>
+                                        <td><div title="Al activar esta opción se habilita que se guarden los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Activar Registro:" mod='webpay'} </strong></td>
+                                        <td class="tbk_table_td">
+                                            {if $lockfile}
+                                                <input type="checkbox" id="action_check" name="action_check" checked data-size="small" value="activate">
+                                            {else}
+                                                <input type="checkbox" id="action_check" name="action_check" data-size="small" state="false">
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="table table-striped" style="display: none;">
+                                    <tr>
+                                        <td><div title="Cantidad de días que se conservan los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Cantidad de Dias a Registrar" mod='webpay'}: </strong></td>
+                                        <td class="tbk_table_td"><input id="days" name="days" type="number" min="1" max="30" value="{$log_days}">{l s=" días"}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><div title="Peso máximo (en Megabytes) de cada archivo que guarda los datos de las compras mediante Webpay" class="label label-info">?</div> <strong>{l s="Peso máximo de Registros" mod='webpay'}:  </strong></td>
+                                        <td class="tbk_table_td"><select style="width: 100px; display: initial;" id="size" name="size">
+                                            {for $c=1 to 10}
+                                                <option value="{$c}" {if $c eq $log_size}selected{/if}>{$c}</option>
+                                            {/for}
+                                        </select> {l s="Mb" mod='webpay'}</td>
+                                    </tr>
+                                </table>
+                                <div class="btn btn-primary" style="display: none;"> {l s='Actualizar Parametros' mod='webpay'}</div>
 
 								<h2 class="">{l s='Información de Registros' mod='webpay'}</h2>
 
 								<table class="table table-striped">
-									<tr>
+									<tr style="display: none;">
 										<td><div title="Informa si actualmente se guarda la información de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Estado de Registros" mod='webpay'}: </strong></td>
 										<td class="tbk_table_td"><span id="action_txt" class="label label-success2">{l s='Registro-activado' mod='webpay' }</span><br> </td>
 									</tr>
@@ -348,64 +344,29 @@
 			</div>
 		</div>
 
-		<script type="text/javascript">
+        <script type="text/javascript">
 
-			function swap_action(){
+            $("[name='action_check']").bootstrapSwitch();
+
+			function updateConfigLogs(){
 				$.ajax({
 					type:'POST',
-					url:'../modules/webpay/libwebpay/call_LogHandler.php',
-					data:{
-						action_check:document.getElementById("action_check").checked,
-						days:$("#days").val(),
-						size:$("#size").val()
+                    url:'../modules/webpay/libwebpay/UpdateConfigLog.php',
+                    dataType:'json',
+					data: {
+						status: document.getElementById("action_check").checked,
+						max_days: $("#days").val(),
+						max_weight: $("#size").val()
 					},
 					success:function(response) {
-
-						if(response.success) {
-							//actualiza contenido
-							if (document.getElementById("action_check").checked) {
-								document.getElementById('action_txt').innerHTML = 'Registro activado';
-								$('#action_txt').removeClass("label-warning").addClass("label-success2");
-							} else{
-								document.getElementById('action_txt').innerHTML = 'Registro desactivado';
-								$('#action_txt').removeClass("label-success2").addClass("label-warning");
-							}
-
-							$(".td_log_dir").empty();
-							$(".td_log_count").empty();
-							$(".td_log_files").empty();
-							$(".td_log_last_file").empty();
-							$(".td_log_file_weight").empty();
-							$(".td_log_regs_lines").empty();
-							$(".log_content").empty();
-							$(".td_log_dir").append(response.log.log_dir);
-							$(".td_log_count").append(response.log.logs_count.log_count);
-
-							var ul_content = '<ul style="font-size:0.8em;">';
-
-							response.log.logs_list.map(function(log_list){
-								ul_content += '<li>'+log_list+'</li>';
-							});
-
-							ul_content += '</ul>';
-
-							$(".td_log_files").append(ul_content);
-							$(".td_log_last_file").append(response.log.last_log.log_file);
-							$(".td_log_file_weight").append(response.log.last_log.log_weight);
-							$(".td_log_regs_lines").append(response.log.last_log.log_regs_lines);
-							$(".log_content").append(response.log.last_log.log_content);
-						}
-					},
-					dataType:'json'
+					}
 				});
-
 			}
-			//swap_action();
+
 			function cargaDatosIntegracion(){
 				var private_key_js = "{$data_secretcode_init}".replace(/<br\s*\/?>/mg,"\n");
 				var public_cert_js = "{$data_certificate_init}".replace(/<br\s*\/?>/mg,"\n");
 				var webpay_cert_js = "{$data_certificatetransbank_init}".replace(/<br\s*\/?>/mg,"\n");
-
 				document.getElementById('storeID').value = "{$data_storeid_init|escape:'htmlall':'UTF-8'}";
 				document.getElementById('secretCode').value = private_key_js;
 				document.getElementById('certificate').value = public_cert_js;
