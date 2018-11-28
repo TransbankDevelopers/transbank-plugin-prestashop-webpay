@@ -3,8 +3,6 @@
 <h2>{l s='Order summary' mod='webpay'}</h2>
 
 {assign var='current_step' value='payment'}
-{include file="$tpl_dir./order-steps.tpl"}
-{include file="$tpl_dir./errors.tpl"}
 
 <form method="post" action="{$url}">
     {if ({$token_ws} == '')}

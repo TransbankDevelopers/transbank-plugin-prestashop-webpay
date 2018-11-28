@@ -1,9 +1,5 @@
 {extends file='page.tpl'}
 {assign var='current_step' value='payment'}
-{if isset($tpl_dir)}
-    {include file="$tpl_dir./order-steps.tpl"}
-    {include file="$tpl_dir./errors.tpl"}
-{/if}
 
 {block name="content"}
 
