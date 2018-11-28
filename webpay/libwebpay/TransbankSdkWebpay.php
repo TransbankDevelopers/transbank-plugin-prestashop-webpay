@@ -47,6 +47,7 @@ class TransbankSdkWebpay {
                 "error" => 'Error al crear la transacción',
                 "detail" => $e->getMessage()
             );
+            $this->log->logError(json_encode($result));
 		}
 		return $result;
     }
