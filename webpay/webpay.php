@@ -88,8 +88,7 @@ class WebPay extends PaymentModule {
             'WEBPAY_VOUCHER_TIPOCUOTAS' => Context::getContext()->cookie->WEBPAY_VOUCHER_TIPOCUOTAS,
             'WEBPAY_VOUCHER_TIPOPAGO' => Context::getContext()->cookie->WEBPAY_VOUCHER_TIPOPAGO,
             'WEBPAY_VOUCHER_NROCUOTAS' => Context::getContext()->cookie->WEBPAY_VOUCHER_NROCUOTAS,
-            'WEBPAY_RESULT_CODE' => Context::getContext()->cookie->WEBPAY_RESULT_CODE,
-            'WEBPAY_TX_ANULADA' => Context::getContext()->cookie->WEBPAY_TX_ANULADA
+            'WEBPAY_RESULT_CODE' => Context::getContext()->cookie->WEBPAY_RESULT_CODE
         ));
 
         if (isset($params[$nameOrderRef]->reference) && !empty($params[$nameOrderRef]->reference)) {

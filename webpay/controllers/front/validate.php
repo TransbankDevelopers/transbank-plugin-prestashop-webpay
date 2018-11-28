@@ -24,7 +24,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
         $this->log = new LogHandler();
 
-        if (Context::getContext()->cookie->PAYMENT_OK == "WAITING") {
+        if (Context::getContext()->cookie->PAYMENT_OK == 'WAITING') {
             $this->processPayment($_POST);
         } else {
             $this->processRedirect($_POST);
@@ -79,7 +79,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             return;
         }
 
-        $token_ws = isset($data["token_ws"]) ? $data["token_ws"] : null;
+        $tokenWs = isset($data["token_ws"]) ? $data["token_ws"] : null;
 
         $config = array(
             "MODO" => Configuration::get('WEBPAY_AMBIENT'),
@@ -91,26 +91,12 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             "URL_RETURN" => Configuration::get('WEBPAY_POSTBACKURL')
         );
 
-        $result = array();
+        $transbankSdkWebpay = new TransbankSdkWebpay($config);
+        $result = $transbankSdkWebpay->commitTransaction($tokenWs);
 
-		try {
-			$transbankSdkWebpay = new TransbankSdkWebpay($config);
-            $result = $transbankSdkWebpay->commitTransaction($token_ws);
-		} catch(Exception $e) {
-            Context::getContext()->cookie->__set('PAYMENT_OK', 'FAIL');
-            Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
-            Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $e->getMessage());
-            Context::getContext()->cookie->__set('WEBPAY_TX_ANULADA', "SI");
-        }
+        if (isset($result->buyOrder) && isset($result->detailOutput) && $result->detailOutput->responseCode == 0) {
 
-		if (isset($result->buyOrder)) {
-
-            if ($result->detailOutput->responseCode == 0){
-                $transactionResponse = "Transacción aprobada";
-            } else {
-                $transactionResponse = $result->detailOutput->responseDescription;
-            }
-
+            $transactionResponse = "Transacción aprobada";
             $date_tmp = strtotime($result->transactionDate);
             $date_tx_hora = date('H:i:s',$date_tmp);
             $date_tx_fecha = date('d-m-Y',$date_tmp);
@@ -125,7 +111,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             Context::getContext()->cookie->__set('PAYMENT_OK', 'SUCCESS');
             Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', $result->detailOutput->responseCode);
             Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $transactionResponse);
-            Context::getContext()->cookie->__set('WEBPAY_TX_ANULADA', "NO");
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TXRESPTEXTO', $transactionResponse);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TOTALPAGO', $result->detailOutput->amount);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_ACCDATE', $result->accountingDate);
@@ -139,8 +124,21 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_RESPCODE', $result->detailOutput->responseCode);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_NROCUOTAS', $result->detailOutput->sharesNumber);
 
-            $this->toRedirect($result->urlRedirection, array("token_ws" => $token_ws));
+            $this->toRedirect($result->urlRedirection, array("token_ws" => $tokenWs));
         } else {
+
+            Context::getContext()->cookie->__set('PAYMENT_OK', 'FAIL');
+
+            if (isset($result->detailOutput->responseDescription)) {
+                Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', $result->detailOutput->responseCode);
+                Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $result->detailOutput->responseDescription);
+            } else {
+                Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
+                $error = isset($result["error"]) ? $result["error"] : '';
+                $detail = isset($result["detail"]) ? $result["detail"] : '';
+                Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $error . ', ' . $detail);
+            }
+
             $this->processRedirect($data);
         }
     }
@@ -156,12 +154,9 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
         $customer = new Customer($cart->id_customer);
         $currency = Context::getContext()->currency;
         $amount = (float)$cart->getOrderTotal(true, Cart::BOTH);
-
         $orderStatus = null;
 
-        if(Context::getContext()->cookie->WEBPAY_TX_ANULADA == "SI"){
-            $orderStatus = Configuration::get('PS_OS_CANCELED');
-        } elseif (Context::getContext()->cookie->WEBPAY_RESULT_CODE == 0){
+        if (Context::getContext()->cookie->PAYMENT_OK == 'SUCCESS'){
             $orderStatus = Configuration::get('PS_OS_PREPARATION');
         } else {
             $orderStatus = Configuration::get('PS_OS_ERROR');
@@ -185,7 +180,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
         Tools::redirect('index.php?controller=order-confirmation&' . $dataUrl);
     }
 
-    public function toRedirect($url, $data = []) {
+    private function toRedirect($url, $data = []) {
         echo  "<form action='" . $url . "' method='POST' name='webpayForm'>";
         foreach ($data as $name => $value) {
             echo "<input type='hidden' name='".htmlentities($name)."' value='".htmlentities($value)."'>";
