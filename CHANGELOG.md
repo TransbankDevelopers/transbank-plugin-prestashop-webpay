@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.10] - 2018-11-28
+### Changed
+- Se corrige un problema con plantillas de prestashop en las paginas de éxito y error del plugin.
+
 ## [3.0.9] - 2018-11-28
 ### Changed
 - Se mejora la experiencia de pago.
