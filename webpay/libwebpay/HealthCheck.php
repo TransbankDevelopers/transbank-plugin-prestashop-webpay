@@ -3,7 +3,6 @@ require_once('TransbankSdkWebpay.php');
 
 class HealthCheck {
 
-    var $phpinfo;
     var $publicCert;
     var $privateKey;
     var $webpayCert;
@@ -25,25 +24,17 @@ class HealthCheck {
         $this->privateKey = $config['PRIVATE_KEY'];
         $this->webpayCert = $config['WEBPAY_CERT'];
         $this->ecommerce = $config['ECOMMERCE'];
-
-        $this->resume = null;
-        $this->fullResume = null;
-        $this->versioninfo = null;
-        $this->certificates = null;
-
         // extensiones necesarias
         $this->extensions = array(
             'openssl',
             'SimpleXML',
             'soap',
-            'dom',
+            'dom'
         );
     }
 
-    // validaciones
-
     // validacion certificado publico versus la llave
-    private function getValidateCertificates(){
+    private function getValidateCertificates() {
         if ($var = openssl_x509_parse($this->publicCert)) {
             $today = date('Y-m-d H:i:s');
             $from = date('Y-m-d H:i:s', $var['validFrom_time_t']);
@@ -69,7 +60,7 @@ class HealthCheck {
                 'valid_to' => 'Error',
             );
         }
-        if (openssl_x509_check_private_key($this->publicCert, $this->privateKey) ) {
+        if (openssl_x509_check_private_key($this->publicCert, $this->privateKey)) {
             if ($this->commerceCode == $this->certinfo['subject_commerce_code']) {
                 $this->certificates = array(
                     'cert_vs_private_key' => 'OK',
@@ -117,7 +108,7 @@ class HealthCheck {
                 'status' => $status,
                 'version' => $version
             );
-        } else{
+        } else {
             $result = array(
                 'status' => 'Error!',
                 'version' => 'No Disponible'
@@ -170,13 +161,13 @@ class HealthCheck {
 
     // creacion de retornos
     // arma array que entrega informacion del ecommerce: nombre, version instalada, ultima version disponible
-    private function getPluginInfo($ecommerce){
+    private function getPluginInfo($ecommerce) {
         $data = $this->getEcommerceInfo($ecommerce);
         $result = array(
             'ecommerce' => $ecommerce,
             'ecommerce_version' => $data['current_ecommerce_version'],
             'current_plugin_version' => $data['current_plugin_version'],
-            'last_plugin_version' => $this->getPluginLastVersion($ecommerce,$data['current_ecommerce_version']) // ultimo declarado
+            'last_plugin_version' => $this->getPluginLastVersion($ecommerce, $data['current_ecommerce_version']) // ultimo declarado
         );
         return $result;
     }
@@ -202,7 +193,7 @@ class HealthCheck {
     }
 
     // crea resumen de informacion del servidor. NO incluye a PHP info
-    private function getServerResume(){
+    private function getServerResume() {
         // arma array de despliegue
         $this->resume = array(
             'php_version' => $this->getValidatephp(),
@@ -213,7 +204,7 @@ class HealthCheck {
     }
 
     // crea array con la informacion de comercio para posteriormente exportarla via json
-    private function getCommerceInfo(){
+    private function getCommerceInfo() {
         $result = array(
             'environment' => $this->environment,
             'commerce_code' => $this->commerceCode,
@@ -230,26 +221,24 @@ class HealthCheck {
         phpinfo();
         $info = ob_get_contents();
         ob_end_clean();
-
         $newinfo = strstr($info, '<table>');
         $newinfo = strstr($newinfo, '<h1>PHP Credits</h1>',true);
-        $return = array('string' => array('content' => str_replace('</div></body></html>','',$newinfo)));
-
+        $return = array('string' => array('content' => str_replace('</div></body></html>','', $newinfo)));
         return $return;
     }
 
-    private function setInitTransaction(){
-        $webpay = new TransbankSdkWebpay($this->config);
+    public function setInitTransaction(){
+        $transbankSdkWebpay = new TransbankSdkWebpay($this->config);
         $amount = 990;
         $buyOrder = "_Healthcheck_";
         $sessionId = uniqid();
         $returnUrl = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
         $finalUrl = "https://webpay3gint.transbank.cl/filtroUnificado/initTransaction";
-        $result = $webpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
+        $result = $transbankSdkWebpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
         if ($result) {
             if (!empty($result["error"]) && isset($result["error"])) {
                 $status = 'Error';
-            }else{
+            } else {
                 $status = 'OK';
             }
         } else {
@@ -265,10 +254,9 @@ class HealthCheck {
     }
 
     //compila en solo un metodo toda la informacion obtenida, lista para imprimir
-    private function getFullResume(){
+    private function getFullResume() {
         $this->fullResume = array(
             'validate_certificates' => $this->getValidateCertificates(),
-            //'validate_init_transaction' => $this->setInitTransaction(), esto se realiza de manera manual
             'server_resume' => $this->getServerResume(),
             'php_extensions_status'  => $this->getExtensionsValidate(),
             'commerce_info' => $this->getCommerceInfo(),
@@ -277,40 +265,44 @@ class HealthCheck {
         return $this->fullResume;
     }
 
-    private function setpostinstall(){
+    private function setpostinstall() {
         return false;
     }
 
-    //funciones de impresion
     // imprime informacion de comercio y llaves
-    public function printCommerceInfo(){
+    public function printCommerceInfo() {
         return json_encode($this->getCommerceInfo());
     }
 
-    public function printPhpInfo(){
+    public function printPhpInfo() {
         return json_encode($this->getPhpInfo());
     }
+
     // imprime resultado la consistencia de certificados y llabves
-    public function printCertificatesStatus(){
+    public function printCertificatesStatus() {
         return json_encode($this->getValidateCertificates());
     }
+
     // imprime en formato json la validacion de extensiones / modulos de php
-    public function printExtensionStatus(){
+    public function printExtensionStatus() {
         return json_encode($this->getExtensionsValidate());
     }
+
     // imprime en formato json informacion del servidor
-    public function printServerResume(){
+    public function printServerResume() {
         return json_encode($this->getServerResume());
     }
+
     // imprime en formato json el resumen completo
-    public function printFullResume(){
+    public function printFullResume() {
         return json_encode($this->getFullResume());
     }
-    public function getInitTransaction(){
+
+    public function getInitTransaction() {
         return json_encode($this->setInitTransaction());
     }
 
-    public function getpostinstallinfo(){
+    public function getpostinstallinfo() {
         return json_encode($this->setpostinstall());
     }
 }
