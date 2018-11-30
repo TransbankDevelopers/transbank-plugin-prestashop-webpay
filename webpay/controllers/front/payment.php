@@ -44,10 +44,17 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
             $date_tx_hora = date('H:i:s');
             $date_tx_fecha = date('d-m-Y');
 
+            $products = $cart->getProducts();
+            $itemsId = array();
+            foreach ($products as $product) {
+                $itemsId[] = (int)$product['id_product'];
+            }
+
             Context::getContext()->cookie->__set('PAYMENT_OK', 'WAITING');
             Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', "");
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TXRESPTEXTO', "");
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TOTALPAGO', $amount);
+            Context::getContext()->cookie->__set('WEBPAY_VOUCHER_ITEMS_ID', json_encode($itemsId));
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_ACCDATE', "");
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_ORDENCOMPRA', $buyOrder);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TXDATE_HORA', $date_tx_hora);
