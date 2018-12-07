@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.12] - 2018-12-06
+### Changed
+- Se mejoran las pantallas de error y éxito, ahora muestra la orden de compra, fecha y hora en las pantallas de error.
+
 ## [3.0.11] - 2018-11-30
 ### Changed
 - Se corrige un problema evitando que se pueda agregar items al carro durante el proceso de pago.
