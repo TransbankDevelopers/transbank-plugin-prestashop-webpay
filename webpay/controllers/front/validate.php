@@ -96,16 +96,11 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
                                 ', itemsOriginal: ' . $itemsOriginal .
                                 ', itemsId: ' . json_encode($itemsId));
 
-            $result = array(
-                'error' => 'Error en el pago',
-                'detail' => 'Carro inválido'
-            );
-
             Context::getContext()->cookie->__set('PAYMENT_OK', 'FAIL');
             Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
-            Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $result["error"] . ', ' . $result["detail"]);
+            Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', 'Error en el pago, Carro inválido');
 
-            $this->processRedirect($data, $result);
+            $this->processRedirect($data);
             return;
         }
 
@@ -164,12 +159,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
                 Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', $result->detailOutput->responseCode);
                 Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $result->detailOutput->responseDescription);
 
-                $result = array(
-                    'error' => 'Error en el pago',
-                    'detail' => $result->detailOutput->responseDescription
-                );
-
-                $this->processRedirect($data, $result);
+                $this->processRedirect($data);
 
             } else {
 
@@ -179,12 +169,12 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
                 Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
                 Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $error . ', ' . $detail);
 
-                $this->processRedirect($data, $result);
+                $this->processRedirect($data);
             }
         }
     }
 
-    private function processRedirect($data, $result = array()) {
+    private function processRedirect($data) {
 
         $cart = Context::getContext()->cart;
 
@@ -221,12 +211,18 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             Tools::redirect('index.php?controller=order-confirmation&' . $dataUrl);
         } else {
 
-            $error = isset($result["error"]) ? $result["error"] : 'Error en el pago';
-            $detail = isset($result["detail"]) ? $result["detail"] : 'Indefinido';
+            $WEBPAY_RESULT_CODE = Context::getContext()->cookie->__get('WEBPAY_RESULT_CODE');
+            $WEBPAY_RESULT_DESC = Context::getContext()->cookie->__get('WEBPAY_RESULT_DESC');
+            $WEBPAY_VOUCHER_ORDENCOMPRA = Context::getContext()->cookie->__get('WEBPAY_VOUCHER_ORDENCOMPRA');
+            $WEBPAY_VOUCHER_TXDATE_HORA = Context::getContext()->cookie->__get('WEBPAY_VOUCHER_TXDATE_HORA');
+            $WEBPAY_VOUCHER_TXDATE_FECHA = Context::getContext()->cookie->__get('WEBPAY_VOUCHER_TXDATE_FECHA');
 
             Context::getContext()->smarty->assign(array(
-                'error' => $error,
-                'detail' => $detail
+                'WEBPAY_RESULT_CODE' => $WEBPAY_RESULT_CODE,
+                'WEBPAY_RESULT_DESC' => $WEBPAY_RESULT_DESC,
+                'WEBPAY_VOUCHER_ORDENCOMPRA' => $WEBPAY_VOUCHER_ORDENCOMPRA,
+                'WEBPAY_VOUCHER_TXDATE_HORA' => $WEBPAY_VOUCHER_TXDATE_HORA,
+                'WEBPAY_VOUCHER_TXDATE_FECHA' => $WEBPAY_VOUCHER_TXDATE_FECHA
             ));
 
             if (Utils::isPrestashop_1_6()) {
