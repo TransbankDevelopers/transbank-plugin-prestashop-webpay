@@ -149,10 +149,50 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_RESPCODE', $result->detailOutput->responseCode);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_NROCUOTAS', $result->detailOutput->sharesNumber);
 
+            $customer = new Customer($cart->id_customer);
+            $currency = Context::getContext()->currency;
+            $orderStatus = Configuration::get('PS_OS_PREPARATION');
+
+            $this->module->validateOrder((int)$cart->id,
+                                        $orderStatus,
+                                        $amountOriginal,
+                                        $this->module->displayName,
+                                        'Pago exitoso',
+                                        array(),
+                                        (int)$currency->id,
+                                        false,
+                                        $customer->secure_key);
+
+            $order = new Order($this->module->currentOrder);
+            $payment = $order->getOrderPaymentCollection();
+            if (isset($payment[0])) {
+                $payment[0]->transaction_id = $cart->id;
+                $payment[0]->card_number = '**********' . $result->cardDetail->cardNumber;
+                $payment[0]->card_brand = '';
+                $payment[0]->card_expiration = '';
+                $payment[0]->card_holder = '';
+                $payment[0]->save();
+            }
+
             $this->toRedirect($result->urlRedirection, array("token_ws" => $tokenWs));
+
         } else {
 
             Context::getContext()->cookie->__set('PAYMENT_OK', 'FAIL');
+
+            $customer = new Customer($cart->id_customer);
+            $currency = Context::getContext()->currency;
+            $orderStatus = Configuration::get('PS_OS_ERROR');
+
+            $this->module->validateOrder((int)$cart->id,
+                                        $orderStatus,
+                                        $amountOriginal,
+                                        $this->module->displayName,
+                                        'Pago fallido',
+                                        array(),
+                                        (int)$currency->id,
+                                        false,
+                                        $customer->secure_key);
 
             if (isset($result->detailOutput->responseDescription)) {
 
@@ -184,31 +224,18 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
         $customer = new Customer($cart->id_customer);
         $currency = Context::getContext()->currency;
-        $amountOriginal = Context::getContext()->cookie->__get('WEBPAY_VOUCHER_TOTALPAGO');
-        $orderStatus = null;
 
-        if (Context::getContext()->cookie->PAYMENT_OK == 'SUCCESS'){
-            $orderStatus = Configuration::get('PS_OS_PREPARATION');
-        } else {
-            $orderStatus = Configuration::get('PS_OS_ERROR');
-        }
+        $this->log->logInfo('PAYMENT_OK: '.Context::getContext()->cookie->PAYMENT_OK);
 
-        $this->module->validateOrder((int)$cart->id,
-                                    $orderStatus,
-                                    $amountOriginal,
-                                    $this->module->displayName,
-                                    NULL,
-                                    NULL,
-                                    (int)$currency->id,
-                                    false,
-                                    $customer->secure_key);
+        if (Context::getContext()->cookie->PAYMENT_OK == 'SUCCESS') {
 
-        if ($orderStatus == Configuration::get('PS_OS_PREPARATION')) {
             $dataUrl = 'id_cart='.(int)$cart->id.
                     '&id_module='.(int)$this->module->id.
                     '&id_order='.$this->module->currentOrder.
                     '&key='.$customer->secure_key;
+
             Tools::redirect('index.php?controller=order-confirmation&' . $dataUrl);
+
         } else {
 
             $WEBPAY_RESULT_CODE = Context::getContext()->cookie->__get('WEBPAY_RESULT_CODE');
