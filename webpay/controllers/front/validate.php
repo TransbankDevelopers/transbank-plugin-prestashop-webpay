@@ -100,6 +100,20 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
             Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', 'Error en el pago, Carro inválido');
 
+            $customer = new Customer($cart->id_customer);
+            $currency = Context::getContext()->currency;
+            $orderStatus = Configuration::get('PS_OS_ERROR');
+
+            $this->module->validateOrder((int)$cart->id,
+                                        $orderStatus,
+                                        $amountOriginal,
+                                        $this->module->displayName,
+                                        'Pago fallido',
+                                        array(),
+                                        (int)$currency->id,
+                                        false,
+                                        $customer->secure_key);
+
             $this->processRedirect($data);
             return;
         }
