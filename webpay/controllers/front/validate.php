@@ -85,16 +85,49 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             $itemsId[] = (int)$product['id_product'];
         }
 
-        $itemsOriginal = Context::getContext()->cookie->__get('WEBPAY_VOUCHER_ITEMS_ID');
-        $amountOriginal = Context::getContext()->cookie->__get('WEBPAY_VOUCHER_TOTALPAGO');
-        $amount = (float)$cart->getOrderTotal(true, Cart::BOTH);
+        $amount = $cart->getOrderTotal(true, Cart::BOTH);
+        $buyOrder = $cart->id;
 
-        if ($amountOriginal != $amount || $itemsOriginal != json_encode($itemsId)) {
+        $tokenWs = isset($data["token_ws"]) ? $data["token_ws"] : null;
 
-            $this->log->logError('Error en el pago - amountOriginal: ' . $amountOriginal .
-                                ', amount: ' . $amount .
-                                ', itemsOriginal: ' . $itemsOriginal .
-                                ', itemsId: ' . json_encode($itemsId));
+        if (!isset($tokenWs)) {
+
+            $error = 'Compra cancelada';
+            $detail = 'El token no ha sido enviado';
+
+            Context::getContext()->cookie->__set('PAYMENT_OK', 'FAIL');
+            Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
+            Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $error . ', ' . $detail);
+
+            $customer = new Customer($cart->id_customer);
+            $currency = Context::getContext()->currency;
+            $orderStatus = Configuration::get('PS_OS_CANCELED');
+
+            $this->module->validateOrder((int)$cart->id,
+                                        $orderStatus,
+                                        $amount,
+                                        $this->module->displayName,
+                                        'Pago cancelado',
+                                        array(),
+                                        (int)$currency->id,
+                                        false,
+                                        $customer->secure_key);
+
+            $this->processRedirect($data);
+
+            return;
+        }
+
+        //patch for error with parallels carts
+        $dataPaymentHash = $amount . $buyOrder. json_encode($itemsId);
+        $paymentHash = md5($dataPaymentHash);
+        $dataPaymentHashOriginal = $_GET['ph_'];
+
+        //patch for error with parallels carts
+        if ($dataPaymentHashOriginal != $paymentHash) {
+
+            $this->log->logError('Error en el pago - dataPaymentHashOriginal: ' . $dataPaymentHashOriginal .
+                                ', paymentHash: ' . $paymentHash);
 
             Context::getContext()->cookie->__set('PAYMENT_OK', 'FAIL');
             Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', 500);
@@ -106,7 +139,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
             $this->module->validateOrder((int)$cart->id,
                                         $orderStatus,
-                                        $amountOriginal,
+                                        $amount,
                                         $this->module->displayName,
                                         'Pago fallido',
                                         array(),
@@ -117,8 +150,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             $this->processRedirect($data);
             return;
         }
-
-        $tokenWs = isset($data["token_ws"]) ? $data["token_ws"] : null;
 
         $config = array(
             "MODO" => Configuration::get('WEBPAY_AMBIENT'),
@@ -169,7 +200,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
             $this->module->validateOrder((int)$cart->id,
                                         $orderStatus,
-                                        $amountOriginal,
+                                        $amount,
                                         $this->module->displayName,
                                         'Pago exitoso',
                                         array(),
@@ -200,7 +231,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
             $this->module->validateOrder((int)$cart->id,
                                         $orderStatus,
-                                        $amountOriginal,
+                                        $amount,
                                         $this->module->displayName,
                                         'Pago fallido',
                                         array(),
@@ -238,8 +269,6 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
         $customer = new Customer($cart->id_customer);
         $currency = Context::getContext()->currency;
-
-        $this->log->logInfo('PAYMENT_OK: '.Context::getContext()->cookie->PAYMENT_OK);
 
         if (Context::getContext()->cookie->PAYMENT_OK == 'SUCCESS') {
 
