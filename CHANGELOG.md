@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.14] - 2018-12-21
+### Fixed
+- Corrige validación de certificados
+
 ## [3.0.13] - 2018-12-20
 ### Fixed
 - Se corrige un problema evitando que se pueda agregar items al carro durante el proceso de pago.
