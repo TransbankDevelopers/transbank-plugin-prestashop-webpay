@@ -160,8 +160,6 @@ class WebPay extends PaymentModule {
             Configuration::updateValue('WEBPAY_CERTIFICATE', Tools::getValue('certificate'));
             Configuration::updateValue('WEBPAY_CERTIFICATETRANSBANK', Tools::getValue('certificateTransbank'));
             Configuration::updateValue('WEBPAY_AMBIENT', Tools::getValue('ambient'));
-            Configuration::updateValue('WEBPAY_NOTIFYURL', Context::getContext()->link->getModuleLink($this->name, 'validate', array(), true));
-            Configuration::updateValue('WEBPAY_POSTBACKURL', Context::getContext()->link->getModuleLink($this->name, 'validate', array(), true));
 
             $this->loadPluginConfiguration();
             $this->pluginValidation();
@@ -203,8 +201,6 @@ class WebPay extends PaymentModule {
                 'version' => $this->version,
                 'api_version' => '1.0',
                 'img_icono' => "https://www.transbank.cl/public/img/LogoWebpay.png",
-                'webpay_notify_url' => $shopDomainSsl . __PS_BASE_URI__ . "modules/{$this->name}/controllers/front/validate.php",
-                'webpay_postback_url' => $shopDomainSsl . __PS_BASE_URI__ . "modules/{$this->name}/controllers/front/validate.php",
                 'cert_vs_private' =>$this->datos_hc->validate_certificates->consistency->cert_vs_private_key,
                 'commerce_code_validate' =>$this->datos_hc->validate_certificates->consistency->commerce_code_validate,
                 'subject_commerce_code' =>$this->datos_hc->validate_certificates->cert_info->subject_commerce_code,
@@ -264,8 +260,6 @@ class WebPay extends PaymentModule {
         $this->certificateTransbank = Configuration::get('WEBPAY_CERTIFICATETRANSBANK');
         $this->ambient = Configuration::get('WEBPAY_AMBIENT');
         $this->title = Context::getContext()->cookie->WEBPAY_TITLE;
-        $this->webpay_notify_url = Configuration::get('WEBPAY_NOTIFYURL');
-        $this->webpay_postback_url = Configuration::get('WEBPAY_POSTBACKURL');
     }
 
     private function setupPlugin() {
@@ -275,8 +269,6 @@ class WebPay extends PaymentModule {
         Configuration::updateValue('WEBPAY_CERTIFICATE', str_replace("<br/>", "\n", $this->certificate_init));
         Configuration::updateValue('WEBPAY_CERTIFICATETRANSBANK', str_replace("<br/>", "\n", $this->certificateTransbank_init));
         Configuration::updateValue('WEBPAY_AMBIENT', "INTEGRACION");
-        Configuration::updateValue('WEBPAY_NOTIFYURL', Context::getContext()->link->getModuleLink($this->name, 'validate', array(), true));
-        Configuration::updateValue('WEBPAY_POSTBACKURL', Context::getContext()->link->getModuleLink($this->name, 'validate', array(), true));
     }
 
     private function loadIntegrationCertificates() {
@@ -359,7 +351,5 @@ class WebPay extends PaymentModule {
 
         $this->ambient = Configuration::get('WEBPAY_AMBIENT');
         $this->title = Context::getContext()->cookie->WEBPAY_TITLE;
-        $this->webpay_notify_url = Configuration::get('WEBPAY_NOTIFYURL');
-        $this->webpay_postback_url = Configuration::get('WEBPAY_POSTBACKURL');
     }
 }

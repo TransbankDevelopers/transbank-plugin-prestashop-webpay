@@ -25,9 +25,7 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
             "PRIVATE_KEY" => Configuration::get('WEBPAY_SECRETCODE'),
             "PUBLIC_CERT" => Configuration::get('WEBPAY_CERTIFICATE'),
             "WEBPAY_CERT" => Configuration::get('WEBPAY_CERTIFICATETRANSBANK'),
-            "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID'),
-            "URL_FINAL" => Configuration::get('WEBPAY_NOTIFYURL'),
-            "URL_RETURN" => Configuration::get('WEBPAY_POSTBACKURL')
+            "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID')
         );
 
         $products = $cart->getProducts();
@@ -44,8 +42,10 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController {
         $dataPaymentHash = $amount . $buyOrder. json_encode($itemsId);
         $paymentHash = md5($dataPaymentHash);
 
-        $returnUrl = $config['URL_RETURN'] . '&ph_=' . $paymentHash;
-        $finalUrl = $config['URL_FINAL'] . '&ph_=' . $paymentHash;
+        $url = Context::getContext()->link->getModuleLink('webpay', 'validate', array(), true);
+        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . ('ph_=' . $paymentHash);
+        $returnUrl = $url;
+        $finalUrl = $url;
 
         $transbankSdkWebpay = new TransbankSdkWebpay($config);
         $result = $transbankSdkWebpay->initTransaction(round($amount), $sessionId, $buyOrder, $returnUrl, $finalUrl);
