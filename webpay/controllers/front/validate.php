@@ -156,9 +156,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             "PRIVATE_KEY" => Configuration::get('WEBPAY_SECRETCODE'),
             "PUBLIC_CERT" => Configuration::get('WEBPAY_CERTIFICATE'),
             "WEBPAY_CERT" => Configuration::get('WEBPAY_CERTIFICATETRANSBANK'),
-            "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID'),
-            "URL_FINAL" => Configuration::get('WEBPAY_NOTIFYURL'),
-            "URL_RETURN" => Configuration::get('WEBPAY_POSTBACKURL')
+            "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID')
         );
 
         $transbankSdkWebpay = new TransbankSdkWebpay($config);
