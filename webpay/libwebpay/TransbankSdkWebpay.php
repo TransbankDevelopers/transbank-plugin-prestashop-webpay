@@ -1,5 +1,5 @@
 <?php
-require_once(_PS_MODULE_DIR_.'webpay/vendor/transbank/transbank-sdk/init.php');
+require_once(_PS_MODULE_DIR_.'webpay/vendor/autoload.php');
 require_once('LogHandler.php');
 
 use Transbank\Webpay\Configuration;
