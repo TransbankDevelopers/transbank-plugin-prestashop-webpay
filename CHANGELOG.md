@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.17] - 2019-03-05
+### Changed
+- Se corrige compatibilidad para tener instalado Webpay y Onepay sin conflictos en el mismo Prestashop.
+
 ## [3.0.16] - 2019-01-14
 ### Changed
 - Se elimina la condición de VCI == "TSY" || VCI == "" para evaluar la respuesta de getTransactionResult debido a que
