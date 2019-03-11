@@ -176,6 +176,12 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
                 $tipo_cuotas = "Sin cuotas";
             }
 
+            if($result->detailOutput->paymentTypeCode == "VD"){
+                $paymentType = "Débito";
+            } else {
+                $paymentType = "Crédito";
+            }
+
             Context::getContext()->cookie->__set('PAYMENT_OK', 'SUCCESS');
             Context::getContext()->cookie->__set('WEBPAY_RESULT_CODE', $result->detailOutput->responseCode);
             Context::getContext()->cookie->__set('WEBPAY_RESULT_DESC', $transactionResponse);
@@ -187,7 +193,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TXDATE_FECHA', $date_tx_fecha);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_NROTARJETA', $result->cardDetail->cardNumber);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_AUTCODE', $result->detailOutput->authorizationCode);
-            Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TIPOPAGO', $this->paymentTypeCodearray[$result->detailOutput->paymentTypeCode]);
+            Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TIPOPAGO', $paymentType);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_TIPOCUOTAS', $tipo_cuotas);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_RESPCODE', $result->detailOutput->responseCode);
             Context::getContext()->cookie->__set('WEBPAY_VOUCHER_NROCUOTAS', $result->detailOutput->sharesNumber);
