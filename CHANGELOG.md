@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.18] - 2019-04-04
+### Fixed
+- Corrige despliegue de información en el detalle de la transacción realizada, ahora se visualiza toda la información
+
 ## [3.0.17] - 2019-03-05
 ### Changed
 - Se corrige compatibilidad para tener instalado Webpay y Onepay sin conflictos en el mismo Prestashop.
