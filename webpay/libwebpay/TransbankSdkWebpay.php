@@ -14,8 +14,8 @@ class TransbankSdkWebpay {
         if (isset($config)) {
             $environment = isset($config["MODO"]) ? $config["MODO"] : 'INTEGRACION';
             $configuration = Configuration::forTestingWebpayPlusNormal();
-            $configuration->setWebpayCert(Webpay::defaultCert($environment));
             if ($environment != 'INTEGRACION') {
+                $configuration->setWebpayCert(Webpay::defaultCert($environment));
                 $configuration->setEnvironment($environment);
                 $configuration->setCommerceCode($config["COMMERCE_CODE"]);
                 $configuration->setPrivateKey($config["PRIVATE_KEY"]);
