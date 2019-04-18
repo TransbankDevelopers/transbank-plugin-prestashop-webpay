@@ -4,6 +4,10 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.19] - 2019-04-18
+### Fixed
+- Corrige configuración, Ya no es necesario incluir el certificado de Webpay
+
 ## [3.0.18] - 2019-04-04
 ### Fixed
 - Corrige despliegue de información en el detalle de la transacción realizada, ahora se visualiza toda la información
