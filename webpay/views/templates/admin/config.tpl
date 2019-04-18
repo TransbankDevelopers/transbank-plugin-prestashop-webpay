@@ -29,10 +29,6 @@
 			<label for="certificate">{l s='Certificado' mod='webpay'}</label>
 			<div class="margin-form"><textarea style="font-family: monospace" cols="90" rows="6" wrap="soft" id="certificate" name="certificate" value="{$data_certificate|escape:'htmlall':'UTF-8'}"/>{$data_certificate|escape:'htmlall':'UTF-8'}</textarea></div>
 			<br/>
-            <label for="certificateTransbank">{l s='Certificado Transbank' mod='webpay'}</label>
-            <label style="font-weight: normal; font-style: italic;">(Opcional, puede dejarse en blanco, en ese caso se usará el predeterminado por el plugin)</label>
-			<div class="margin-form"><textarea style="font-family: monospace" cols="90" rows="6" wrap="soft" id="certificateTransbank" name="certificateTransbank" value="{$data_certificatetransbank|escape:'htmlall':'UTF-8'}"/>{$data_certificatetransbank|escape:'htmlall':'UTF-8'}</textarea></div>
-			<br/>
 			<label for="ambient">{l s='Ambiente' mod='webpay'}</label>
 			<div class="margin-form">
 				<select name="ambient" onChange="
@@ -78,7 +74,6 @@
 									<input type="hidden" name="storeID" value="{$data_storeid}">
 									<input type="hidden" name="certificate" value="{$data_certificate}">
 									<input type="hidden" name="secretCode" value="{$data_secretcode}">
-									<input type="hidden" name="certificateTransbank" value="{$data_certificatetransbank}">
 									<input type="hidden" name="document" value="report">
 									<button type = "submit">
 										<i class="icon-file-text" value="{l s='genera pdf' mod='webpay'}"></i> Crear PDF
@@ -240,7 +235,6 @@
 									<input type="hidden" name="storeID" value="{$data_storeid}">
 									<input type="hidden" name="certificate" value="{$data_certificate}">
 									<input type="hidden" name="secretCode" value="{$data_secretcode}">
-									<input type="hidden" name="certificateTransbank" value="{$data_certificatetransbank}">
 									<input type="hidden" name="document" value="php_info">
 									<button type = "submit">
 										<i class="icon-file-text" value="{l s='Crear PHP info' mod='webpay'}"></i> Crear PHP info
@@ -366,17 +360,14 @@
 			function cargaDatosIntegracion(){
 				var private_key_js = "{$data_secretcode_init}".replace(/<br\s*\/?>/mg,"\n");
 				var public_cert_js = "{$data_certificate_init}".replace(/<br\s*\/?>/mg,"\n");
-				var webpay_cert_js = "{$data_certificatetransbank_init}".replace(/<br\s*\/?>/mg,"\n");
 				document.getElementById('storeID').value = "{$data_storeid_init|escape:'htmlall':'UTF-8'}";
 				document.getElementById('secretCode').value = private_key_js;
 				document.getElementById('certificate').value = public_cert_js;
-				document.getElementById('certificateTransbank').value = webpay_cert_js;
 			}
 
 			function cargaDatosProduccion(){
 				document.getElementById('secretCode').value = '';
 				document.getElementById('certificate').value = '';
-				document.getElementById('certificateTransbank').value = '';
 				document.getElementById('storeID').value = '';
 			}
 
