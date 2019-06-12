@@ -4,6 +4,13 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2019-06-13
+### Changed
+- Se añade soporte comprobado al plugin hasta PHP 7.2.19 + PrestaShop 1.7.5.2
+### Fixed
+- Corrige botón `VERIFICAR CONEXIÓN` a Transbank en pantalla de administración del plugin.
+- Corrige generación de PDFs en pantalla de administración del plugin.
+
 ## [3.0.19] - 2019-04-18
 ### Fixed
 - Corrige configuración, Ya no es necesario incluir el certificado de Webpay
