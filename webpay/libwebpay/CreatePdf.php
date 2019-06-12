@@ -6,11 +6,11 @@ require_once('ReportPdfLog.php');
 require_once('HealthCheck.php');
 
 $config = array(
-    'MODO' => $_POST["ambient"],
-    'COMMERCE_CODE' => $_POST["storeID"],
-    'PUBLIC_CERT' => $_POST["certificate"],
-    'PRIVATE_KEY' => $_POST["secretCode"],
-    'WEBPAY_CERT' => $_POST["certificateTransbank"],
+    "MODO" => Configuration::get('WEBPAY_AMBIENT'),
+    "PRIVATE_KEY" => Configuration::get('WEBPAY_SECRETCODE'),
+    "PUBLIC_CERT" => Configuration::get('WEBPAY_CERTIFICATE'),
+    "WEBPAY_CERT" => Configuration::get('WEBPAY_CERTIFICATETRANSBANK'),
+    "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID'),
     'ECOMMERCE' => 'prestashop'
 );
 

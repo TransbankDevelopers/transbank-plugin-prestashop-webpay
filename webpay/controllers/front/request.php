@@ -11,11 +11,11 @@ if ($type == 'checkInit') {
     try {
 
         $config = array(
-            'MODO' => $_POST['MODE'],
-            'COMMERCE_CODE'	=> $_POST['C_CODE'],
-            'PUBLIC_CERT' => $_POST['PUBLIC_CERT'],
-            'PRIVATE_KEY' => $_POST['PRIVATE_KEY'],
-            'WEBPAY_CERT' => $_POST['WEBPAY_CERT'],
+            "MODO" => Configuration::get('WEBPAY_AMBIENT'),
+            "PRIVATE_KEY" => Configuration::get('WEBPAY_SECRETCODE'),
+            "PUBLIC_CERT" => Configuration::get('WEBPAY_CERTIFICATE'),
+            "WEBPAY_CERT" => Configuration::get('WEBPAY_CERTIFICATETRANSBANK'),
+            "COMMERCE_CODE" => Configuration::get('WEBPAY_STOREID'),
             'ECOMMERCE' => 'prestashop'
         );
 

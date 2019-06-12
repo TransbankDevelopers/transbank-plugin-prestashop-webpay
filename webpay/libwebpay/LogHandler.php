@@ -178,7 +178,7 @@ class LogHandler {
         if (isset($var)) {
             $this->logList = $var;
         }else{
-            $this->logList = null;
+            $this->logList = [];
         }
         return $this->logList;
     }
