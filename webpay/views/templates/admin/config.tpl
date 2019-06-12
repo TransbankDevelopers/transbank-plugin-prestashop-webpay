@@ -154,7 +154,7 @@
 								<table class="table table-striped">
 									<tr>
 										<td><div title="Informa si la versión de PHP instalada en el servidor es compatible con el plugin de Webpay" class="label label-info">?</div> <strong>{l s='Estado de PHP' mod='webpay'}</strong></td>
-										<td class="tbk_table_td"><span  class="label {if $php_status eq 'OK'}label-success2{else}label-danger2{/if}">{$php_status}</td>
+										<td class="tbk_table_td"><span  class="label {if $php_status eq 'OK'}label-success2{else}label-warning{/if}">{$php_status}</td>
 									</tr>
 									<tr>
 										<td><div title="Versión de PHP instalada en el servidor" class="label label-info">?</div> <strong>{l s='version' mod='webpay'}: </strong></td>
