@@ -140,6 +140,7 @@ class WebPay extends PaymentModule {
        $WPOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
        $paymentController = $this->context->link->getModuleLink($this->name,'payment',array(),true);
        $WPOption->setCallToActionText($this->l('Pago con Tarjetas de Credito o Redcompra'))->setAction($paymentController);
+       $WPOption->setLogo('https://www.transbankdevelopers.cl/public/library/img/svg/logo_webpay_plus.svg');
        return $WPOption;
     }
 
