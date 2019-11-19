@@ -200,7 +200,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
             $customer = new Customer($cart->id_customer);
             $currency = Context::getContext()->currency;
-            $orderStatus = Configuration::get('PS_OS_PREPARATION');
+            $orderStatus = Configuration::get('WEBPAY_DEFAULT_ORDER_STATE_ID_AFTER_PAYMENT');
 
             $this->module->validateOrder((int)$cart->id,
                                         $orderStatus,

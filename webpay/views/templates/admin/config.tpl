@@ -43,6 +43,25 @@
 			</div>
 			<br/>
 
+            <label for="default_order_status_after_payment">{l s='Estado del pedido despues del pago' mod='webpay'}</label>
+            <div class="margin-form">
+                 <select name="webpay_default_order_state_id_after_payment">
+                    {foreach from=$payment_states key=index item=status_data}
+                        {if strval($status_data['id_order_state']) == strval($default_after_payment_order_state_id) }
+
+                            <option selected value="{$status_data['id_order_state']}">
+                                {$status_data["name"]}
+                            </option>
+                        {else}
+                            <option value="{$status_data['id_order_state']}">
+                                {$status_data["name"]}
+                            </option>
+                        {/if}
+                    {/foreach}
+                </select>
+            </div>
+            <br/>
+
 			<div align="right">
 				<button type="submit" value="1" id="webpay_updateSettings" name="webpay_updateSettings" class="btn btn-info pull-right">
 					<i class="process-icon-save" value="{l s='Save Settings' mod='webpay'}"></i> Guardar
