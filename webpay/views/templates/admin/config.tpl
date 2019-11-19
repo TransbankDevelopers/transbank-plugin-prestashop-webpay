@@ -48,7 +48,6 @@
                  <select name="webpay_default_order_state_id_after_payment">
                     {foreach from=$payment_states key=index item=status_data}
                         {if strval($status_data['id_order_state']) == strval($default_after_payment_order_state_id) }
-
                             <option selected value="{$status_data['id_order_state']}">
                                 {$status_data["name"]}
                             </option>
