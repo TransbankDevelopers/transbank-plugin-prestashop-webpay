@@ -151,7 +151,6 @@ class WebPay extends PaymentModule {
         $change=false;
 
         if (Tools::getIsset('webpay_updateSettings')) {
-
             if (Tools::getValue('ambient') !=  Configuration::get('WEBPAY_AMBIENT')) {
                 $change=true;
             }
@@ -161,7 +160,7 @@ class WebPay extends PaymentModule {
             Configuration::updateValue('WEBPAY_CERTIFICATE', Tools::getValue('certificate'));
             Configuration::updateValue('WEBPAY_CERTIFICATETRANSBANK', Tools::getValue('certificateTransbank'));
             Configuration::updateValue('WEBPAY_AMBIENT', Tools::getValue('ambient'));
-
+            Configuration::updateValue('WEBPAY_DEFAULT_ORDER_STATE_ID_AFTER_PAYMENT', (int)Tools::getValue('webpay_default_order_state_id_after_payment'));
             $this->loadPluginConfiguration();
             $this->pluginValidation();
 
@@ -185,8 +184,14 @@ class WebPay extends PaymentModule {
 
         $this->datos_hc = json_decode($this->healthcheck->printFullResume());
 
+        $ostatus = new OrderState(1);
+        $statuses = $ostatus->getOrderStates(1);
+        $defaultPaymentStatus = Configuration::get('WEBPAY_DEFAULT_ORDER_STATE_ID_AFTER_PAYMENT');
+
         Context::getContext()->smarty->assign(
             array(
+                'default_after_payment_order_state_id' => $defaultPaymentStatus,
+                'payment_states' => $statuses,
                 'errors' => $this->_errors,
                 'post_url' => $_SERVER['REQUEST_URI'],
                 'data_storeid_init' => $this->storeID_init,
@@ -270,6 +275,10 @@ class WebPay extends PaymentModule {
         Configuration::updateValue('WEBPAY_CERTIFICATE', str_replace("<br/>", "\n", $this->certificate_init));
         Configuration::updateValue('WEBPAY_CERTIFICATETRANSBANK', str_replace("<br/>", "\n", $this->certificateTransbank_init));
         Configuration::updateValue('WEBPAY_AMBIENT', "INTEGRACION");
+        // We assume that the default state is "PREPARATION" and then set it
+        // as the default order status after payment for our plugin
+        $orderInPreparationStateId =Configuration::get('PS_OS_PREPARATION');
+        Configuration::updateValue('WEBPAY_DEFAULT_ORDER_STATE_ID_AFTER_PAYMENT', $orderInPreparationStateId);
     }
 
     private function loadIntegrationCertificates() {
