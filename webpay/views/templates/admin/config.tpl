@@ -1,26 +1,23 @@
 
 <body onload="">
 	<div>
-		<link rel="stylesheet" href="../modules/webpay/views/css/bootstrap.min.css">
-		<link href="../modules/webpay/views/css/bootstrap-switch.css" rel="stylesheet">
 		<link href="../modules/webpay/views/css/tbk.css" rel="stylesheet">
 		<script src="../modules/webpay/views/js/request.js"> </script>
-		<script src="https://unpkg.com/bootstrap-switch"></script>
 
 		<h2>{l s='Pago electrónico con Tarjetas de Crédito o Redcompra a través de Webpay Plus' mod='webpay'}</h2>
-		<button  class ="btn btn-primary" data-toggle="modal" data-target="#tb_modal">Informacion</button>
+		<button  class ="btn btn-primary" data-toggle="modal" data-target="#tb_modal">Información</button>
 		<hr>
 
 		<form action="{$post_url|escape:'htmlall':'UTF-8'}" method="post" style="clear: both; margin-top: 10px;">
 
-			<h2 class="">{l s='Configuracion' mod='webpay'}</h2>
+			<h2 class="">{l s='Configuración' mod='webpay'}</h2>
 			{if isset($errors.merchantERR)}
 				<div class="error">
 					<p>{$errors.merchantERR|escape:'htmlall':'UTF-8'}</p>
 				</div>
 			{/if}
 
-			<label for="storeID">{l s='Codigo de Comercio' mod='webpay'}</label>
+			<label for="storeID">{l s='Código de Comercio' mod='webpay'}</label>
 			<div class="margin-form"><input type="text" size="90" id="storeID" name="storeID" value="{$data_storeid|escape:'htmlall':'UTF-8'}"/></div>
 			<br/>
 			<label for="secretCode">{l s='Llave privada' mod='webpay'}</label>
@@ -37,8 +34,8 @@
 					}else if(this.options[1].selected){
 						cargaDatosProduccion();
 					}" default="INTEGRACION">
-					<option value="INTEGRACION" {if $data_ambient eq "INTEGRACION"}selected{/if}>Integracion</option>
-					<option value="PRODUCCION" {if $data_ambient eq "PRODUCCION"}selected{/if}>Produccion</option>
+					<option value="INTEGRACION" {if $data_ambient eq "INTEGRACION"}selected{/if}>Integración</option>
+					<option value="PRODUCCION" {if $data_ambient eq "PRODUCCION"}selected{/if}>Producción</option>
 				</select>
 			</div>
 			<br/>
@@ -93,7 +90,7 @@
 									<input type="hidden" name="certificate" value="{$data_certificate}">
 									<input type="hidden" name="secretCode" value="{$data_secretcode}">
 									<input type="hidden" name="document" value="report">
-									<button type = "submit">
+									<button type = "submit" class="btn btn-primary">
 										<i class="icon-file-text" value="{l s='genera pdf' mod='webpay'}"></i> Crear PDF
 									</button>
 								</form>
@@ -254,49 +251,19 @@
 									<input type="hidden" name="certificate" value="{$data_certificate}">
 									<input type="hidden" name="secretCode" value="{$data_secretcode}">
 									<input type="hidden" name="document" value="php_info">
-									<button type = "submit">
-										<i class="icon-file-text" value="{l s='Crear PHP info' mod='webpay'}"></i> Crear PHP info
+									<button type = "submit" class="btn btn-primary">
+										<i class="icon-file-text" value="{l s='Crear PHP info' mod='webpay'}"></i> Descargar PDF con PHP info
 									</button>
 								</form>
 
 								<hr style="border-width: 2px">
 
 								<br>
-								<h2 class="">{l s='php_info' mod='webpay'}</h2>
 								<span style="font-size: 10px; font-family:monospace; display: block; background: white;overflow: hidden; width: 90%;" >{$php_info}</span><br>
 							</div>
 
 							<!-- REGISTROS -->
 							<div id="logs" class="tab-pane fade">
-
-								<h2 class="" style="display: none;">{l s='Configuración' mod='webpay'}</h2>
-                                <table class="table table-striped" style="display: none;">
-                                    <tr>
-                                        <td><div title="Al activar esta opción se habilita que se guarden los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Activar Registro:" mod='webpay'} </strong></td>
-                                        <td class="tbk_table_td">
-                                            {if $lockfile}
-                                                <input type="checkbox" id="action_check" name="action_check" checked data-size="small" value="activate">
-                                            {else}
-                                                <input type="checkbox" id="action_check" name="action_check" data-size="small" state="false">
-                                            {/if}
-                                        </td>
-                                    </tr>
-                                </table>
-                                <table class="table table-striped" style="display: none;">
-                                    <tr>
-                                        <td><div title="Cantidad de días que se conservan los datos de cada compra mediante Webpay" class="label label-info">?</div> <strong>{l s="Cantidad de Dias a Registrar" mod='webpay'}: </strong></td>
-                                        <td class="tbk_table_td"><input id="days" name="days" type="number" min="1" max="30" value="{$log_days}">{l s=" días"}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><div title="Peso máximo (en Megabytes) de cada archivo que guarda los datos de las compras mediante Webpay" class="label label-info">?</div> <strong>{l s="Peso máximo de Registros" mod='webpay'}:  </strong></td>
-                                        <td class="tbk_table_td"><select style="width: 100px; display: initial;" id="size" name="size">
-                                            {for $c=1 to 10}
-                                                <option value="{$c}" {if $c eq $log_size}selected{/if}>{$c}</option>
-                                            {/for}
-                                        </select> {l s="Mb" mod='webpay'}</td>
-                                    </tr>
-                                </table>
-                                <div class="btn btn-primary" style="display: none;"> {l s='Actualizar Parametros' mod='webpay'}</div>
 
 								<h2 class="">{l s='Información de Registros' mod='webpay'}</h2>
 
@@ -357,8 +324,6 @@
 		</div>
 
         <script type="text/javascript">
-
-            $("[name='action_check']").bootstrapSwitch();
 
 			function updateConfigLogs(){
 				$.ajax({
