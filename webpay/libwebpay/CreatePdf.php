@@ -2,6 +2,7 @@
 require_once('../../../config/config.inc.php');
 if (!defined('_PS_VERSION_')) exit;
 
+require_once(_PS_MODULE_DIR_.'webpay/vendor/autoload.php');
 require_once('ReportPdfLog.php');
 require_once('HealthCheck.php');
 
