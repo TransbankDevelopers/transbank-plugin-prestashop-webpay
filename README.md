@@ -1,10 +1,26 @@
-# Transbank Prestashop Webpay
-
-Plugin oficial de Prestashop para Webpay
+# Transbank Woocommerce Webpay
+Plugin oficial de Webpay para Prestashop
 
 ## Descripción
+Este plugin **oficial** de Transbank te permite integrar Webpay fácilmente en tu sitio Prestashop. Está desarrollado en base al [SDK oficial de PHP](https://github.com/TransbankDevelopers/transbank-sdk-php)
 
-Este plugin de Prestashop implementa el [SDK PHP de Webpay](https://github.com/TransbankDevelopers/transbank-sdk-php).
+### ¿Cómo instalar?
+Puedes ver las instrucciones de instalación y la documentación completa del plugin en [transbankdevelopers.cl/plugin/woocommerce/](https://www.transbankdevelopers.cl/plugin/prestashop/)
+
+### Paso a producción
+Al instalar el plugin, este vendrá configurado para funcionar en modo '**integración**'(en el ambiente de pruebas de Transbank). Para poder operar con dinero real (ambiente de **producción**), debes:
+
+1. Tener tu propio código de comercio. Si no lo tienes, solicita Webpay Plus en [transbank.cl](https://transbank.cl)
+2. Instalar este plugin en tu comercio y verificar que todo funciona correctamente
+3. Debes [generar tus credenciales](https://www.transbankdevelopers.cl/documentacion/como_empezar#credenciales-en-webpay)  (llave privada y llave pública) usando tu código de comercio. 
+4. Enviar [esta planilla de integración](https://transbankdevelopers.cl/files/evidencia-integracion-webpay-plugins.docx) a soporte@transbank.cl, junto con la llave pública (generada en el paso anterior) y tu logo. 
+5. Cuando Transbank confirme que ha cargado tu certificado público y logo, debes entrar a la pantalla de configuración del plugin dentro de Prestashop y colocar tu código de comercio, llave privada, llave pública y poner el ambiente de 'Producción'. 
+6. Debes hacer una compra de $10 en el ambiente de producción para confirmar el correcto funcionamiento. 
+
+Puedes ver más información sobre este proceso en [este link](https://www.transbankdevelopers.cl/documentacion/como_empezar#puesta-en-produccion)
+
+# Desarrollo
+A continuación, encontrarás información necesaria para el desarrollo de este plugin. 
 
 ## Requisitos 
 * PHP 5.6 o superior
