@@ -159,7 +159,7 @@ class HealthCheck {
 
     // creacion de retornos
     // arma array que entrega informacion del ecommerce: nombre, version instalada, ultima version disponible
-    private function getPluginInfo($ecommerce) {
+    public function getPluginInfo($ecommerce) {
         $data = $this->getEcommerceInfo($ecommerce);
         $result = array(
             'ecommerce' => $ecommerce,

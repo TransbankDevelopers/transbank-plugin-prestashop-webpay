@@ -4,6 +4,7 @@ if (!defined('_PS_VERSION_'))
 
 require_once('libwebpay/HealthCheck.php');
 require_once('libwebpay/LogHandler.php');
+require_once("libwebpay/Telemetry/PluginVersion.php");
 require_once('libwebpay/Utils.php');
 
 class WebPay extends PaymentModule {
@@ -52,12 +53,14 @@ class WebPay extends PaymentModule {
 
     public function install() {
 		$this->setupPlugin();
+		
         return parent::install() &&
         $this->registerHook('header') &&
         $this->registerHook('paymentOptions') &&
         $this->registerHook('paymentReturn') &&
         $this->registerHook('displayPayment') &&
         $this->registerHook('displayPaymentReturn');
+        
     }
 
     public function uninstall() {
@@ -143,17 +146,18 @@ class WebPay extends PaymentModule {
        $WPOption->setLogo('https://www.transbankdevelopers.cl/public/library/img/svg/logo_webpay_plus.svg');
        return $WPOption;
     }
-
+    
     public function getContent() {
 
         $activeShopID = (int)Context::getContext()->shop->id;
         $shopDomainSsl = Tools::getShopDomainSsl(true, true);
-        $change=false;
+        $theEnvironmentChanged=false;
 
         if (Tools::getIsset('webpay_updateSettings')) {
             if (Tools::getValue('ambient') !=  Configuration::get('WEBPAY_AMBIENT')) {
-                $change=true;
+                $theEnvironmentChanged=true;
             }
+            
 
             Configuration::updateValue('WEBPAY_STOREID', trim(Tools::getValue('storeID')));
             Configuration::updateValue('WEBPAY_SECRETCODE', trim(Tools::getValue('secretCode')));
@@ -167,19 +171,16 @@ class WebPay extends PaymentModule {
         } else {
             $this->loadPluginConfiguration();
         }
-
-        $config = array(
-            'MODO' => $this->ambient,
-            'COMMERCE_CODE' => $this->storeID,
-            'PUBLIC_CERT' => $this->certificate,
-            'PRIVATE_KEY' => $this->secretCode,
-            'WEBPAY_CERT' => $this->certificateTransbank,
-            'ECOMMERCE' => 'prestashop'
-        );
-
+    
+        $config = $this->getConfigForHealthCheck();
+    
         $this->healthcheck = new HealthCheck($config);
-        if ($change) {
+        if ($theEnvironmentChanged) {
             $rs = $this->healthcheck->getpostinstallinfo();
+        }
+        
+        if (Tools::getValue('ambient') === 'PRODUCCION') {
+            $this->sendPluginVersion($config);
         }
 
         $this->datos_hc = json_decode($this->healthcheck->printFullResume());
@@ -254,7 +255,33 @@ class WebPay extends PaymentModule {
     private function pluginValidation() {
         $this->_errors = array();
     }
-
+    /**
+     * @return array
+     */
+    public function getConfigForHealthCheck()
+    {
+        $config = [
+            'MODO' => $this->ambient,
+            'COMMERCE_CODE' => $this->storeID,
+            'PUBLIC_CERT' => $this->certificate,
+            'PRIVATE_KEY' => $this->secretCode,
+            'WEBPAY_CERT' => $this->certificateTransbank,
+            'ECOMMERCE' => 'prestashop'
+        ];
+        
+        return $config;
+    }
+    /**
+     * @param array $config
+     */
+    public function sendPluginVersion(array $config)
+    {
+        $telemetryData = $this->healthcheck->getPluginInfo($this->healthcheck->ecommerce);
+        (new \Transbank\Telemetry\PluginVersion())->registerVersion($config['COMMERCE_CODE'],
+            $telemetryData['current_plugin_version'], $telemetryData['ecommerce_version'],
+            \Transbank\Telemetry\PluginVersion::ECOMMERCE_PRESTASHOP);
+    }
+    
     private function adminValidation() {
         $this->_errors = array();
     }
@@ -277,7 +304,7 @@ class WebPay extends PaymentModule {
         Configuration::updateValue('WEBPAY_AMBIENT', "INTEGRACION");
         // We assume that the default state is "PREPARATION" and then set it
         // as the default order status after payment for our plugin
-        $orderInPreparationStateId =Configuration::get('PS_OS_PREPARATION');
+        $orderInPreparationStateId = Configuration::get('PS_OS_PREPARATION');
         Configuration::updateValue('WEBPAY_DEFAULT_ORDER_STATE_ID_AFTER_PAYMENT', $orderInPreparationStateId);
     }
 
