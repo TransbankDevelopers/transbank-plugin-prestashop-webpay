@@ -1,11 +1,11 @@
-# Transbank Woocommerce Webpay
+# Transbank Prestashop Webpay
 Plugin oficial de Webpay para Prestashop
 
 ## Descripción
 Este plugin **oficial** de Transbank te permite integrar Webpay fácilmente en tu sitio Prestashop. Está desarrollado en base al [SDK oficial de PHP](https://github.com/TransbankDevelopers/transbank-sdk-php)
 
 ### ¿Cómo instalar?
-Puedes ver las instrucciones de instalación y la documentación completa del plugin en [transbankdevelopers.cl/plugin/woocommerce/](https://www.transbankdevelopers.cl/plugin/prestashop/)
+Puedes ver las instrucciones de instalación y la documentación completa del plugin en [transbankdevelopers.cl/plugin/prestashop/](https://www.transbankdevelopers.cl/plugin/prestashop/)
 
 ### Paso a producción
 Al instalar el plugin, este vendrá configurado para funcionar en modo '**integración**'(en el ambiente de pruebas de Transbank). Para poder operar con dinero real (ambiente de **producción**), debes:
@@ -16,7 +16,7 @@ Al instalar el plugin, este vendrá configurado para funcionar en modo '**integr
 4. Cuando Transbank confirme que ha cargado tu certificado público y logo, debes entrar a la pantalla de configuración del plugin dentro de Prestashop y colocar tu código de comercio, llave privada, llave pública y poner el ambiente de 'Producción'. 
 5. Debes hacer una compra de $10 en el ambiente de producción para confirmar el correcto funcionamiento. 
 
-Puedes ver más información sobre este proceso en [este link](https://www.transbankdevelopers.cl/documentacion/como_empezar#puesta-en-produccion)
+Puedes ver más información sobre este proceso en [este link](https://www.transbankdevelopers.cl/documentacion/como_empezar#puesta-en-produccion).
 
 # Desarrollo
 A continuación, encontrarás información necesaria para el desarrollo de este plugin. 
