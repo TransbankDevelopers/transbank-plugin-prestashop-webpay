@@ -9,6 +9,7 @@ y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.ht
 - Send plugin information when plugin is set to production environment
 - Add TCPDF as compose dependency
 - Add support to PHP 7.3
+- Allow the user to change the default order status
 
 ## [3.1.1] - 2019-10-18
 ### Fixed
