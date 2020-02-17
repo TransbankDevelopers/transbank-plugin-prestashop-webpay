@@ -16,7 +16,7 @@ Al instalar el plugin, este vendrá configurado para funcionar en modo '**integr
 4. Cuando Transbank confirme que ha cargado tu certificado público y logo, debes entrar a la pantalla de configuración del plugin dentro de Prestashop y colocar tu código de comercio, llave privada, llave pública y poner el ambiente de 'Producción'. 
 5. Debes hacer una compra de $10 en el ambiente de producción para confirmar el correcto funcionamiento. 
 
-Puedes ver más información sobre este proceso en [este link](https://www.transbankdevelope****rs.cl/documentacion/como_empezar#puesta-en-produccion).
+Puedes ver más información sobre este proceso en [este link](https://www.transbankdevelopers.cl/documentacion/como_empezar#puesta-en-produccion).
 
 # Desarrollo
 A continuación, encontrarás información necesaria para el desarrollo de este plugin. 
