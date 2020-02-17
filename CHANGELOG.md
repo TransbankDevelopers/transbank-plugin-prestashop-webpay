@@ -4,6 +4,13 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 2020-02-17
+### Fixed
+- Send plugin information when plugin is set to production environment
+- Add TCPDF as compose dependency
+- Add support to PHP 7.3
+- Allow the user to change the default order status
+
 ## [3.1.1] - 2019-10-18
 ### Fixed
 - Se actualiza versión del SDK a la última versión para resolver la conexión con
