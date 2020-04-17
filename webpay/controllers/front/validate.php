@@ -220,6 +220,12 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
                 $payment[0]->card_brand = '';
                 $payment[0]->card_expiration = '';
                 $payment[0]->card_holder = '';
+                $payment[0]->byorder = $result->buyOrder;
+                $payment[0]->authorizationcode = $result->detailOutput->authorizationCode;
+                $payment[0]->paymenttype = $paymentType;
+                $payment[0]->tipo_cuotas = $tipo_cuotas;
+                $payment[0]->sharesnumber = $result->detailOutput->sharesNumber;
+                $payment[0]->responsecode = $result->detailOutput->responseCode;
                 $payment[0]->save();
             }
 
