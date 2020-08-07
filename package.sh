@@ -29,7 +29,14 @@ zip -FSr $PLUGIN_FILE $SRC_DIR -x webpay/vendor/tecnickcom/tcpdf/fonts/a*\/* \
                                     webpay/vendor/tecnickcom/tcpdf/fonts/f*\/* \
                                     webpay/vendor/tecnickcom/tcpdf/fonts/a* \
                                     webpay/vendor/tecnickcom/tcpdf/fonts/ci* \
-                                    webpay/vendor/tecnickcom/tcpdf/fonts/d* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavu-* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavusansb* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavusansc* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavusanse* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavusansi* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavusansm* \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavusans.z \
+                                    webpay/vendor/tecnickcom/tcpdf/fonts/dejavuser* \
                                     webpay/vendor/tecnickcom/tcpdf/fonts/f* \
                                     webpay/vendor/tecnickcom/tcpdf/fonts/k* \
                                     webpay/vendor/tecnickcom/tcpdf/fonts/m* \
