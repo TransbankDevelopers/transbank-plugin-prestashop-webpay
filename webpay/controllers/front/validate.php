@@ -48,7 +48,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController {
 
         if ($cart->id == null) {
             $id_usuario = Context::getContext()->customer->id;
-            $sql = "SELECT id_cart FROM ps_cart p WHERE p.id_customer = $id_usuario ORDER BY p.id_cart DESC";
+            $sql = "SELECT id_cart FROM " . _DB_PREFIX_ . "_cart p WHERE p.id_customer = $id_usuario ORDER BY p.id_cart DESC";
             $id_carro = Db::getInstance()->getValue($sql, $use_cache = true);
             $cart->id = $id_carro;
             $customer = new Customer($cart->id_customer);
