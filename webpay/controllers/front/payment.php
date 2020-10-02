@@ -56,7 +56,8 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController
             $transaction->currency_id = (int) Context::getContext()->cart->id_currency;
             $saved = $transaction->save();
             if (!$saved) {
-                (new Logger())->error('Could not create record on webpay_transactions database');
+                (new LogHandler())->logError('Could not create record on webpay_transactions database');
+                return $this->setErrorTemplate(['error' => 'No se pudo crear la transacción en la tabla webpay_transactions']);
             }
             $this->setRedirectionTemplate($result, $amount);
         } else {

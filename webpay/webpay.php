@@ -63,14 +63,20 @@ class WebPay extends PaymentModule {
 
     public function install() {
 		$this->setupPlugin();
-		
+    
         return parent::install() &&
         $this->registerHook('header') &&
         $this->registerHook('paymentOptions') &&
         $this->registerHook('paymentReturn') &&
         $this->registerHook('displayPayment') &&
-        $this->registerHook('displayPaymentReturn');
+        $this->registerHook('displayPaymentReturn') &&
+        $this->installWebpayTable();
         
+    }
+    
+    protected function installWebpayTable() {
+        $installer = new \Transbank\WebpayPlus\Install\Installer();
+        return $installer->installWebpayOrdersTable();
     }
     
     public function uninstall() {
@@ -119,7 +125,7 @@ class WebPay extends PaymentModule {
             'WEBPAY_VOUCHER_AUTCODE' => $transbankResponse['detailOutput']['authorizationCode'],
             'WEBPAY_VOUCHER_TIPOCUOTAS' => $tipo_cuotas,
             'WEBPAY_VOUCHER_TIPOPAGO' => $paymentType,
-            'WEBPAY_VOUCHER_NROCUOTAS' => $transbankResponse['detailOutput']['sharesNumber'],
+            'WEBPAY_VOUCHER_NROCUOTAS' => $transbankResponse['detailOutput']['sharesNumber'] ? $transbankResponse['detailOutput']['sharesNumber'] : "0",
             'WEBPAY_RESULT_CODE' => $webpayTransaction->response_code
         ));
 

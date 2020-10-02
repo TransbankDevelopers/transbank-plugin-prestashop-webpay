@@ -1,7 +1,5 @@
 <?php
-// require_once(dirname(__FILE__).'../../../../../config/config.inc.php');
-die('hola');
-if (!defined('_PS_VERSION_')) exit;
+require_once(dirname(__FILE__).'../../../../../config/config.inc.php');
 
 require_once(_PS_MODULE_DIR_.'webpay/libwebpay/HealthCheck.php');
 require_once(_PS_MODULE_DIR_.'webpay/libwebpay/LogHandler.php');
