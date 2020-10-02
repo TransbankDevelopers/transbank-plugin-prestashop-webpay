@@ -41,10 +41,7 @@ class WebPay extends PaymentModule {
         $this->description = 'Recibe pagos en línea con tarjetas de crédito y Redcompra en tu Prestashop a través de Webpay Plus';
         $this->controllers = array('payment', 'validate');
         $this->confirmUninstall = '¿Estás seguro/a que deseas desinstalar este módulo de pago?';
-
-        // Context::getContext()->cookie->__set('WEBPAY_TITLE', "Pago con Tarjetas de Credito o Redcompra");
-        // Context::getContext()->cookie->__set('WEBPAY_BUTTON_TITLE', "Pago electronico con Tarjetas de Credito o Redcompra a traves de Webpay Plus");
-
+        
         $this->loadIntegrationCertificates();
 
         $this->pluginValidation();

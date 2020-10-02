@@ -43,23 +43,40 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
     
-        $this->stopIfComingFromErrorOnWebpayForm();
         $this->stopIfComingFromAnTimeoutErrorOnWebpay();
-    
         $webpayTransaction = $this->getTransactionByToken();
+        
         
         $cart = new Cart($webpayTransaction->cart_id);
         if (!$this->validateData($cart)) {
-            $this->throwError('Can not validate order cart');
+            return $this->throwError('Can not validate order cart');
         }
+        
         if ($webpayTransaction->status == WebpayTransaction::STATUS_APPROVED) {
-            $dataUrl = 'id_cart=' . (int)$cart->id . '&id_module=' . (int)$this->module->id . '&id_order=' . $this->module->currentOrder . '&key=' . $customer->secure_key;
-            Tools::redirect('index.php?controller=order-confirmation&' . $dataUrl);
-        }elseif ($webpayTransaction->status == WebpayTransaction::STATUS_INITIALIZED) {
-            $this->processPayment($webpayTransaction, $cart);
-        } else {
-            $this->showToErrorPage('Esta compra se encuentra en estado rechazado o cancelado y no se puede aceptar el pago' );
+            return $this->redirectToSuccessPage($cart);
         }
+        
+        
+        if ($webpayTransaction->status != WebpayTransaction::STATUS_INITIALIZED) {
+            return $this->showToErrorPage('Esta compra se encuentra en estado rechazado o cancelado y no se puede aceptar el pago');
+        }
+        
+        if (isset($_GET['final']) && isset($_POST['TBK_TOKEN']) && isset($_POST['token_ws'])) {
+            $webpayTransaction->status = WebpayTransaction::STATUS_FAILED;
+            $webpayTransaction->save();
+            
+            return $this->showToErrorPage('Al parecer ocurrió un error durante el proceso de pago. Puedes volver a intentar. ');
+        }
+        
+        if ($this->getOtherApprovedTransactionsOfThisCart($webpayTransaction) && !isset($_GET['final'])) {
+            $webpayTransaction->status = WebpayTransaction::STATUS_FAILED;
+            $webpayTransaction->save();
+            
+            return $this->setErrorPage('Otra transacción de este carro de compras ya fue aprobada. Se rechazo este pago para no generar un cobro duplicado');
+        }
+        
+        $this->processPayment($webpayTransaction, $cart);
+        
     }
     
     /**
@@ -94,6 +111,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
         
         if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 || !$this->module->active) {
             $this->throwError('Error: id_costumer or id_address_delivery or id_address_invoice or $this->module->active was true');
+            
             return false;
         }
         
@@ -118,10 +136,10 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
         
         $transbankSdkWebpay = WebpayPlusFactory::create();
         $result = $transbankSdkWebpay->commitTransaction($webpayTransaction->token);
-    
+        
         $webpayTransaction->transbank_response = json_encode($result);
         $webpayTransaction->status = WebpayTransaction::STATUS_FAILED;
-        $updateResult = $webpayTransaction->save();
+        $updateResult = $webpayTransaction->save(); // Guardar como fallida por si algo falla más adelante
         
         if (!$updateResult) {
             $this->throwError('No se pudo guardar en base de datos el resultado de la transacción: ' . \DB::getMsgError());
@@ -135,8 +153,8 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
             $currency = Context::getContext()->currency;
             $OKStatus = Configuration::get('WEBPAY_DEFAULT_ORDER_STATE_ID_AFTER_PAYMENT');
             
-            $this->module->validateOrder((int)$cart->id, $OKStatus, $amount, $this->module->displayName,
-                'Pago exitoso', [], (int)$currency->id, false, $customer->secure_key);
+            $this->module->validateOrder((int)$cart->id, $OKStatus, $amount, $this->module->displayName, 'Pago exitoso',
+                [], (int)$currency->id, false, $customer->secure_key);
             
             $order = new Order($this->module->currentOrder);
             $payment = $order->getOrderPaymentCollection();
@@ -149,23 +167,20 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
                 $payment[0]->save();
             }
             
-            \Db::getInstance()->update(WebpayTransaction::TABLE_NAME, [
-                'response_code' => $result->detailOutput->responseCode,
-                'order_id' => $order->id,
-                'vci' => $result->VCI,
-                'status' => WebpayTransaction::STATUS_APPROVED
-            ], 'id = ' . pSQL($webpayTransaction->id));
+            $webpayTransaction->response_code = $result->detailOutput->responseCode;
+            $webpayTransaction->order_id = $order->id;
+            $webpayTransaction->vci = $result->VCI;
+            $webpayTransaction->status = WebpayTransaction::STATUS_APPROVED;
+            $webpayTransaction->save();
             
-            $this->toRedirect($result->urlRedirection, ["token_ws" => $webpayTransaction->token]);
+            return $this->toRedirect($result->urlRedirection, ["token_ws" => $webpayTransaction->token]);
             
         } else {
-    
-             \Db::getInstance()->update(WebpayTransaction::TABLE_NAME, [
-                'response_code' => isset($result->detailOutput->responseCode) ? $result->detailOutput->responseCode : null,
-            ], 'id = ' . pSQL($webpayTransaction->id));
+            
+            $webpayTransaction->response_code = isset($result->detailOutput->responseCode) ? $result->detailOutput->responseCode : null;
+            $webpayTransaction->save();
             
             $this->responseData['PAYMENT_OK'] = 'FAIL';
-            
             
             if (isset($result->detailOutput->responseDescription)) {
                 $this->showToErrorPage($result->detailOutput->responseDescription);
@@ -180,15 +195,15 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
     
     private function showToErrorPage($description = '', $resultCode = null)
     {
-    
-    
+        
+        
         $WEBPAY_RESULT_DESC = $description;
         $WEBPAY_RESULT_CODE = $resultCode;
         $WEBPAY_VOUCHER_ORDENCOMPRA = isset($this->responseData['WEBPAY_VOUCHER_ORDENCOMPRA']) ? $this->responseData['WEBPAY_VOUCHER_ORDENCOMPRA'] : null;
         $WEBPAY_VOUCHER_TXDATE_HORA = isset($this->responseData['WEBPAY_VOUCHER_TXDATE_HORA']) ? $this->responseData['WEBPAY_VOUCHER_TXDATE_HORA'] : null;
         $WEBPAY_VOUCHER_TXDATE_FECHA = isset($this->responseData['WEBPAY_VOUCHER_TXDATE_FECHA']) ? $this->responseData['WEBPAY_VOUCHER_TXDATE_FECHA'] : null;
         
-        $this->setErrorPage($WEBPAY_RESULT_CODE, $WEBPAY_RESULT_DESC, $WEBPAY_VOUCHER_ORDENCOMPRA,
+        $this->setErrorPage($WEBPAY_RESULT_DESC, $WEBPAY_RESULT_CODE, $WEBPAY_VOUCHER_ORDENCOMPRA,
             $WEBPAY_VOUCHER_TXDATE_HORA, $WEBPAY_VOUCHER_TXDATE_FECHA);
     }
     
@@ -210,9 +225,10 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
      * @throws PrestaShopException
      */
     private function setErrorPage(
-        $WEBPAY_RESULT_CODE, $WEBPAY_RESULT_DESC, $WEBPAY_VOUCHER_ORDENCOMPRA, $WEBPAY_VOUCHER_TXDATE_HORA,
-        $WEBPAY_VOUCHER_TXDATE_FECHA
+        $WEBPAY_RESULT_DESC, $WEBPAY_RESULT_CODE = null, $WEBPAY_VOUCHER_ORDENCOMPRA = null,
+        $WEBPAY_VOUCHER_TXDATE_HORA = null, $WEBPAY_VOUCHER_TXDATE_FECHA = null
     ) {
+        (new LogHandler())->logError('ERROR PAGE: ' . $WEBPAY_RESULT_DESC);
         Context::getContext()->smarty->assign([
             'WEBPAY_RESULT_CODE' => $WEBPAY_RESULT_CODE,
             'WEBPAY_RESULT_DESC' => $WEBPAY_RESULT_DESC,
@@ -245,21 +261,19 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
             $sessionId = $_POST['TBK_ID_SESION'];
             $sqlQuery = 'SELECT * FROM ' . _DB_PREFIX_ . WebpayTransaction::TABLE_NAME . ' WHERE `session_id` = "' . $sessionId . '"';
             $transaction = \Db::getInstance()->getRow($sqlQuery);
-            $errorMessage = 'TBK_TOKEN y token_ws was given on the final url, so the user clicked on "volver al comercio" after an error on webpay';
+            $errorMessage = 'Al parecer pasaron más de 15 minutos en el formulario de pago, por lo que la transacción se ha cancelado automáticamente';
             if (!$transaction) {
-                $this->throwError($errorMessage);
+                $this->showToErrorPage($errorMessage);
             }
             $webpayTransaction = new WebpayTransaction($transaction['id']);
+            if ($webpayTransaction->status == WebpayTransaction::STATUS_APPROVED) {
+                $cart = new Cart($webpayTransaction->cart_id);
+                return $this->redirectToSuccessPage($cart);
+            }
             $webpayTransaction->status = WebpayTransaction::STATUS_FAILED;
             $webpayTransaction->transbank_response = json_encode(['error' => $errorMessage]);
             $webpayTransaction->save();
-            $this->throwError($errorMessage);
-        }
-    }
-    private function stopIfComingFromErrorOnWebpayForm()
-    {
-        if (isset($_GET['finish']) && isset($_POST['TBK_TOKEN']) && isset($_POST['token_ws'])) {
-            $this->throwError('TBK_TOKEN y token_ws was given on the final url, so the user clicked on "volver al comercio" after an error on webpay');
+            $this->showToErrorPage($errorMessage);
         }
     }
     /**
@@ -268,7 +282,7 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
     private function getTransactionByToken()
     {
         $token = $this->getTokenWs($_POST);
-        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . WebpayTransaction::TABLE_NAME . ' WHERE `token` = "' . $token . '"';
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . WebpayTransaction::TABLE_NAME . ' WHERE `token` = "' . pSQL($token) . '"';
         $result = \Db::getInstance()->getRow($sql);
         
         if ($result === false) {
@@ -278,5 +292,26 @@ class WebPayValidateModuleFrontController extends ModuleFrontController
         $webpayTransaction = new WebpayTransaction($result['id']);
         
         return $webpayTransaction;
+    }
+    
+    /**
+     * @return WebpayTransaction
+     */
+    private function getOtherApprovedTransactionsOfThisCart($webpayTransaction)
+    {
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . WebpayTransaction::TABLE_NAME . ' WHERE `cart_id` = "' . pSQL($webpayTransaction->cart_id) . '" and status = ' . WebpayTransaction::STATUS_APPROVED;
+        
+        return \Db::getInstance()->getRow($sql);
+        
+    }
+    /**
+     * @param Cart $cart
+     */
+    private function redirectToSuccessPage(Cart $cart)
+    {
+        $customer = new Customer($cart->id_customer);
+        $dataUrl = 'id_cart=' . (int)$cart->id . '&id_module=' . (int)$this->module->id . '&id_order=' . $this->module->currentOrder . '&key=' . $customer->secure_key;
+        
+        return Tools::redirect('index.php?controller=order-confirmation&' . $dataUrl);
     }
 }
