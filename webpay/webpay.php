@@ -1,6 +1,10 @@
 <?php
-if (!defined('_PS_VERSION_'))
+
+use PrestaShop\Module\WebpayPlus\Model\WebpayTransaction;
+
+if (!defined('_PS_VERSION_')) {
     exit;
+}
 
 require_once('libwebpay/HealthCheck.php');
 require_once('libwebpay/LogHandler.php');
@@ -12,6 +16,15 @@ class WebPay extends PaymentModule {
     protected $_errors = array();
 	var $healthcheck;
 	var $log;
+    
+    private $paymentTypeCodearray = [
+        "VD" => "Venta débito",
+        "VN" => "Venta normal",
+        "VC" => "Venta en cuotas",
+        "SI" => "3 cuotas sin interés",
+        "S2" => "2 cuotas sin interés",
+        "NC" => "N cuotas sin interés",
+    ];
 
     public function __construct() {
 
@@ -25,12 +38,12 @@ class WebPay extends PaymentModule {
         parent::__construct();
 
         $this->displayName = 'Webpay Plus';
-        $this->description = 'Recibe pagos en linea con Tarjetas de Credito y Redcompra en tu Prestashop a traves de Webpay Plus';
-        $this->tab = 'payments_gateways';
+        $this->description = 'Recibe pagos en línea con tarjetas de crédito y Redcompra en tu Prestashop a través de Webpay Plus';
         $this->controllers = array('payment', 'validate');
+        $this->confirmUninstall = '¿Estás seguro/a que deseas desinstalar este módulo de pago?';
 
-        Context::getContext()->cookie->__set('WEBPAY_TITLE', "Pago con Tarjetas de Credito o Redcompra");
-        Context::getContext()->cookie->__set('WEBPAY_BUTTON_TITLE', "Pago electronico con Tarjetas de Credito o Redcompra a traves de Webpay Plus");
+        // Context::getContext()->cookie->__set('WEBPAY_TITLE', "Pago con Tarjetas de Credito o Redcompra");
+        // Context::getContext()->cookie->__set('WEBPAY_BUTTON_TITLE', "Pago electronico con Tarjetas de Credito o Redcompra a traves de Webpay Plus");
 
         $this->loadIntegrationCertificates();
 
@@ -62,36 +75,55 @@ class WebPay extends PaymentModule {
         $this->registerHook('displayPaymentReturn');
         
     }
-
+    
     public function uninstall() {
-        if (!parent::uninstall() || !Configuration::deleteByName("WEBPAY"))
+        if (!parent::uninstall() || !Configuration::deleteByName("webpay"))
             return false;
         return true;
     }
 
     public function hookPaymentReturn($params) {
-
         if (!$this->active)
             return;
 
         $nameOrderRef = isset($params['order']) ? 'order' : 'objOrder';
-
+        $orderId = $params[$nameOrderRef]->id;
+    
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . WebpayTransaction::TABLE_NAME . ' WHERE `order_id` = "' . $orderId . '"';
+        $transaction = \Db::getInstance()->getRow($sql);
+        $webpayTransaction = new WebpayTransaction($transaction['id']);
+        $transbankResponse = json_decode($webpayTransaction->transbank_response, true);
+        $transactionDate = strtotime($transbankResponse['transactionDate']);
+        $paymentTypeCode = $transbankResponse['detailOutput']['paymentTypeCode'];
+        if ($paymentTypeCode == "VD") {
+            $paymentType = "Débito";
+        } elseif ($paymentTypeCode == "VP") {
+            $paymentType = "Prepago";
+        } else {
+            $paymentType = "Crédito";
+        }
+        if (in_array($paymentTypeCode, ["SI", "S2", "NC", "VC"])) {
+            $tipo_cuotas = $this->paymentTypeCodearray[$paymentTypeCode];
+        } else {
+            $tipo_cuotas = "Sin cuotas";
+        }
+        
         $this->smarty->assign(array(
             'shop_name' => $this->context->shop->name,
             'total_to_pay' =>  $params[$nameOrderRef]->getOrdersTotalPaid(),
             'status' => 'ok',
-            'id_order' => $params[$nameOrderRef]->id,
-            'WEBPAY_RESULT_DESC' => Context::getContext()->cookie->WEBPAY_RESULT_DESC,
-            'WEBPAY_VOUCHER_NROTARJETA' => Context::getContext()->cookie->WEBPAY_VOUCHER_NROTARJETA,
-            'WEBPAY_VOUCHER_TXDATE_FECHA' => Context::getContext()->cookie->WEBPAY_VOUCHER_TXDATE_FECHA,
-            'WEBPAY_VOUCHER_TXDATE_HORA' => Context::getContext()->cookie->WEBPAY_VOUCHER_TXDATE_HORA,
-            'WEBPAY_VOUCHER_TOTALPAGO' => Context::getContext()->cookie->WEBPAY_VOUCHER_TOTALPAGO,
-            'WEBPAY_VOUCHER_ORDENCOMPRA' => Context::getContext()->cookie->WEBPAY_VOUCHER_ORDENCOMPRA,
-            'WEBPAY_VOUCHER_AUTCODE' => Context::getContext()->cookie->WEBPAY_VOUCHER_AUTCODE,
-            'WEBPAY_VOUCHER_TIPOCUOTAS' => Context::getContext()->cookie->WEBPAY_VOUCHER_TIPOCUOTAS,
-            'WEBPAY_VOUCHER_TIPOPAGO' => Context::getContext()->cookie->WEBPAY_VOUCHER_TIPOPAGO,
-            'WEBPAY_VOUCHER_NROCUOTAS' => Context::getContext()->cookie->WEBPAY_VOUCHER_NROCUOTAS,
-            'WEBPAY_RESULT_CODE' => Context::getContext()->cookie->WEBPAY_RESULT_CODE
+            'id_order' => $orderId,
+            'WEBPAY_RESULT_DESC' => "Transacción aprobada",
+            'WEBPAY_VOUCHER_NROTARJETA' => $transbankResponse['cardDetail']['cardNumber'],
+            'WEBPAY_VOUCHER_TXDATE_FECHA' => date("d-m-Y", $transactionDate),
+            'WEBPAY_VOUCHER_TXDATE_HORA' => date("H:i:s", $transactionDate),
+            'WEBPAY_VOUCHER_TOTALPAGO' => number_format($transbankResponse['detailOutput']['amount'], 0, ',', '.'),
+            'WEBPAY_VOUCHER_ORDENCOMPRA' => $transbankResponse['buyOrder'],
+            'WEBPAY_VOUCHER_AUTCODE' => $transbankResponse['detailOutput']['authorizationCode'],
+            'WEBPAY_VOUCHER_TIPOCUOTAS' => $tipo_cuotas,
+            'WEBPAY_VOUCHER_TIPOPAGO' => $paymentType,
+            'WEBPAY_VOUCHER_NROCUOTAS' => $transbankResponse['detailOutput']['sharesNumber'],
+            'WEBPAY_RESULT_CODE' => $webpayTransaction->response_code
         ));
 
         if (isset($params[$nameOrderRef]->reference) && !empty($params[$nameOrderRef]->reference)) {
@@ -105,7 +137,6 @@ class WebPay extends PaymentModule {
         if (!$this->active) {
             return;
         }
-        $title = Context::getContext()->cookie->WEBPAY_TITLE;
         Context::getContext()->smarty->assign(array(
             'logo' => "https://www.transbank.cl/public/img/LogoWebpay.png",
             'title' => $title
@@ -121,7 +152,7 @@ class WebPay extends PaymentModule {
             return;
         }
         $payment_options = [
-            $this->getWPPaymentOption()
+            $this->getWebpayPaymentOption()
         ];
         return $payment_options;
     }
@@ -139,12 +170,13 @@ class WebPay extends PaymentModule {
         return false;
     }
 
-    public function getWPPaymentOption() {
+    public function getWebpayPaymentOption() {
        $WPOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
        $paymentController = $this->context->link->getModuleLink($this->name,'payment',array(),true);
-       $WPOption->setCallToActionText($this->l('Pago con Tarjetas de Credito o Redcompra'))->setAction($paymentController);
-       $WPOption->setLogo('https://www.transbankdevelopers.cl/public/library/img/svg/logo_webpay_plus.svg');
-       return $WPOption;
+       
+       return $WPOption->setCallToActionText('Pago con tarjetas de crédito o Redcompra')
+           ->setAction($paymentController)
+           ->setLogo('https://www.transbankdevelopers.cl/public/library/img/svg/logo_webpay_plus.svg');
     }
     
     public function getContent() {

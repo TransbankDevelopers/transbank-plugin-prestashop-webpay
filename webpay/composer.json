@@ -3,5 +3,15 @@
         "transbank/transbank-sdk": "1.5.*",
         "apache/log4php":"2.3.0",
         "tecnickcom/tcpdf": "^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "PrestaShop\\Module\\WebpayPlus\\": "src/"
+        },
+        "config": {
+            "prepend-autoloader": false
+        },
+        "type": "prestashop-module"
     }
+
 }

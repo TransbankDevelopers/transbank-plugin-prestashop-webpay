@@ -6,10 +6,10 @@
         <p>
             <b>Respuesta de la Transaccion:</b> {$WEBPAY_RESULT_DESC}
             <br/><b>Código de la Transaccion:</b> {$WEBPAY_RESULT_CODE}
-            <br/><b>Tarjeta de credito:</b> **********{$WEBPAY_VOUCHER_NROTARJETA}
+            <br/><b>Tarjeta de credito:</b> **** **** **** {$WEBPAY_VOUCHER_NROTARJETA}
             <br/><b>Fecha de Transaccion:</b> {$WEBPAY_VOUCHER_TXDATE_FECHA}
             <br/><b>Hora de Transaccion:</b> {$WEBPAY_VOUCHER_TXDATE_HORA}
-            <br/><b>Monto Compra:</b> {$WEBPAY_VOUCHER_TOTALPAGO}
+            <br/><b>Monto Compra:</b> ${$WEBPAY_VOUCHER_TOTALPAGO}
             <br/><b>Orden de Compra:</b> {$WEBPAY_VOUCHER_ORDENCOMPRA}
             <br/><b>Codigo de Autorizacion:</b> {$WEBPAY_VOUCHER_AUTCODE}
             <br/><b>Tipo de Pago:</b> {$WEBPAY_VOUCHER_TIPOPAGO}
