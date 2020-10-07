@@ -14,8 +14,8 @@ FILE2="config.xml"
 FILE3="config_es.xml"
 
 cd $SRC_DIR
-# composer install --no-dev
-# composer update --no-dev
+composer install --no-dev
+composer update --no-dev
 cd ..
 
 sed -i.bkp "s/$this->version = '3.0.6'/$this->version = '${TRAVIS_TAG#"v"}'/g" "$SRC_DIR/$FILE1"
