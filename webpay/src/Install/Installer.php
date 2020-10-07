@@ -3,13 +3,13 @@
 namespace PrestaShop\Module\WebpayPlus\Install;
 
 use Db;
-use PrestaShop\Module\WebpayPlus\Model\WebpayTransaction;
+use TransbankWebpayTransaction;
 
 class Installer
 {
     public function installWebpayOrdersTable()
     {
-        return Db::getInstance()->execute('CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . WebpayTransaction::TABLE_NAME .'` (
+        return Db::getInstance()->execute('CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . TransbankWebpayTransaction::TABLE_NAME .'` (
                 `id` bigint(20) NOT NULL AUTO_INCREMENT,
                 `cart_id` varchar(60) NOT NULL,
                 `order_id` varchar(60),

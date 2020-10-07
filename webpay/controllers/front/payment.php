@@ -1,12 +1,12 @@
 <?php
 // require_once(dirname(__FILE__).'../../../../../config/config.inc.php');
 use PrestaShop\Module\WebpayPlus\Helpers\WebpayPlusFactory;
-use PrestaShop\Module\WebpayPlus\Model\WebpayTransaction;
 
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+require_once(_PS_MODULE_DIR_ . 'webpay/src/Model/TransbankWebpayTransaction.php');
 require_once(_PS_MODULE_DIR_ . 'webpay/libwebpay/TransbankSdkWebpay.php');
 require_once(_PS_MODULE_DIR_ . 'webpay/libwebpay/LogHandler.php');
 require_once(_PS_MODULE_DIR_ . 'webpay/libwebpay/Utils.php');
@@ -32,7 +32,7 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController
         $sessionId = uniqid();
         
         //patch for error with parallels carts
-    
+        
         $cartId = Context::getContext()->cart->id;
         $recoverQueryParams = array('token_cart' => md5(_COOKIE_KEY_ . 'recover_cart_' . $cartId), 'recover_cart' => $cartId);
         $returnUrl = Context::getContext()->link->getModuleLink('webpay', 'validate', $recoverQueryParams, true);
@@ -40,17 +40,17 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController
         //$finalUrl = Context::getContext()->link->getModuleLink('webpay', 'final', $recoverQueryParams, true);
         //$finalUrl = Context::getContext()->link->getPageLink('order', true, null, $recoverQueryParams, true);
         
-       
+        
         $result = $webpay->initTransaction($amount, $sessionId, $buyOrder, $returnUrl, $finalUrl);
         
         if (isset($result["token_ws"])) {
-            $transaction = new WebpayTransaction();
+            $transaction = new TransbankWebpayTransaction();
             $transaction->amount = $amount;
             $transaction->cart_id = (int) $cart->id;
             $transaction->buy_order = 'Order:' . $buyOrder;
             $transaction->session_id = $sessionId;
             $transaction->token = $result["token_ws"];
-            $transaction->status = WebpayTransaction::STATUS_INITIALIZED;
+            $transaction->status = TransbankWebpayTransaction::STATUS_INITIALIZED;
             $transaction->created_at = date('Y-m-d H:i:s');
             $transaction->shop_id = (int) Context::getContext()->shop->id;
             $transaction->currency_id = (int) Context::getContext()->cart->id_currency;
@@ -95,7 +95,7 @@ class WebPayPaymentModuleFrontController extends ModuleFrontController
         
         $error = isset($result['error']) ? $result['error'] : '';
         $detail = isset($result['detail']) ? $result['detail'] : '';
-    
+        
         (new LogHandler())->logError('No se pudo inicializar el pago: ' . $detail);
         
         Context::getContext()->smarty->assign([

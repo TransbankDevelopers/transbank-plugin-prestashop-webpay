@@ -1,7 +1,6 @@
 <?php
-namespace PrestaShop\Module\WebpayPlus\Model;
 
-class WebpayTransaction extends \ObjectModel
+class TransbankWebpayTransaction extends ObjectModel
 {
     const TABLE_NAME = 'webpay_transactions';
     const STATUS_INITIALIZED = 1;
@@ -30,10 +29,11 @@ class WebpayTransaction extends \ObjectModel
         'fields' => [
             'cart_id' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'required' => true],
             'buy_order' => ['type' => self::TYPE_STRING, 'validate' => 'isString', 'required' => true],
+            'order_id' => ['type' => self::TYPE_STRING, 'validate' => 'isUnsignedInt','allow_null' => true],
             'token' => ['type' => self::TYPE_STRING, 'validate' => 'isString', 'required' => true],
             'session_id' => ['type' => self::TYPE_STRING, 'validate' => 'isString', 'allow_null' => true],
             'status' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'required' => true],
-            'response_code' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'allow_null' => true],
+            'response_code' => ['type' => self::TYPE_INT, 'validate' => 'isInt', 'allow_null' => true],
             'currency_id' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt', 'allow_null' => true],
             'transbank_response' => ['type' => self::TYPE_HTML, 'validate' => 'isString', 'allow_null' => true],
             'amount' => ['type' => self::TYPE_FLOAT, 'validate' => 'isPrice', 'required' => true],
