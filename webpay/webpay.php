@@ -35,7 +35,7 @@ class WebPay extends PaymentModule {
         
         $this->name = 'webpay';
         $this->tab = 'payments_gateways';
-        $this->version = '3.2.1';
+        $this->version = '3.0.6';
         $this->author = 'Transbank';
         $this->need_instance = 1;
         $this->bootstrap = true;

@@ -2,8 +2,8 @@
 <module>
 	<name>webpay</name>
 	<displayName><![CDATA[Webpay Plus]]></displayName>
-	<version><![CDATA[3.2.1]]></version>
-	<description><![CDATA[Recibe pagos en línea con tarjetas de crédito y Redcompra en tu Prestashop a través de Webpay Plus]]></description>
+	<version><![CDATA[3.0.6]]></version>
+	<description><![CDATA[Recibe pagos en linea con Tarjetas de Credito y Redcompra en tu Prestashop a traves de Webpay Plus]]></description>
 	<author><![CDATA[Transbank]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<is_configurable>1</is_configurable>
