@@ -23,7 +23,7 @@ A continuación, encontrarás información necesaria para el desarrollo de este 
 
 ## Requisitos 
 * PHP 5.6 o superior
-* Prestashop 1.7 o superior
+* Prestashop 1.6 o superior
 
 ## Dependencias
 

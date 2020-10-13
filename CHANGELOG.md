@@ -4,6 +4,15 @@ Todos los cambios notables a este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 y este proyecto adhiere a [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2020-10-13
+### Added
+- Se crea nueva tabla webpay_orders que mantiene el status de pago de cada transacción, para asi no usar variables de sesión que tienen problemas con Google Chrome 80+ [PR 74](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/pull/74)
+- Después de presionar "pagar", aparecía una segunda pantalla donde había que volver a apretar "Pagar". Este botón ahora se autoenvía, para ahorrarle un paso al cliente final. [PR 74](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/pull/72)
+### Fixed
+- Se soluciona error que producía que no se completara el proceso de Pago en Chrome 80 [PR 74](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/pull/74)
+- Se soluciona error que se generaba cuando se cambia el prefijo de las tablas de prestashop por algo diferente a "ps_". [PR 72](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/pull/72)
+- Se soluciona error en dependencias de TCPF [PR 63](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay/pull/63)
+
 ## [3.1.2] - 2020-02-17
 ### Fixed
 - Send plugin information when plugin is set to production environment
