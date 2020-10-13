@@ -3,7 +3,7 @@
 
 {block name="content"}
 
-    <form method="post" id="webay-form" name="webpayForm" action="{$url}">
+    <form method="post" id="webpay-form" name="webpayForm" action="{$url}">
         {if ({$token_ws} == '')}
             <p class="alert alert-danger">Ocurrió un error al intentar conectar con WebPay o los datos de conexión son incorrectos.</p>
             <p class="cart_navigation clearfix" id="cart_navigation">
@@ -28,7 +28,7 @@
                 </a>
             </p>
             <script>
-                document.getElementById('webay-form').submit();
+                document.getElementById('webpay-form').submit();
             </script>
         {/if}
     </form>

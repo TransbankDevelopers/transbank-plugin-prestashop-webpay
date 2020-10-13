@@ -40,7 +40,8 @@ class TransbankSdkWebpay {
 					"token_ws" => $initResult->token
 				);
             } else {
-                throw new Exception('No se ha creado la transacción para, amount: ' . $amount . ', sessionId: ' . $sessionId . ', buyOrder: ' . $buyOrder);
+                $detail = isset($initResult['detail']) ? $initResult['detail'] : null;
+                throw new Exception('No se ha creado la transacción para, amount: ' . $amount . ', sessionId: ' . $sessionId . ', buyOrder: ' . $buyOrder . '. Detail: ' . $detail);
             }
 		} catch(Exception $e) {
             $result = array(

@@ -1,5 +1,5 @@
 
-{capture name=path}{l s='Pago a través de WebPay' mod='webpay'}{/capture}
+{capture name=path}{l s='Pago a través de Webpay' mod='webpay'}{/capture}
 <h2>{l s='Order summary' mod='webpay'}</h2>
 
 {assign var='current_step' value='payment'}
