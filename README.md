@@ -3,7 +3,7 @@ Plugin oficial de Webpay para Prestashop
 
 ## Deprecado
 Este plugin ha sido deprecado y reemplazado por la nueva versión REST de Webpay Plus. 
-Puedes encontrar el nuevo plugin acá: [https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay-rest](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay)
+Puedes encontrar el nuevo plugin acá: [https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay-rest](https://github.com/TransbankDevelopers/transbank-plugin-prestashop-webpay-rest)
 
 ## Descripción
 Este plugin **oficial** de Transbank te permite integrar Webpay fácilmente en tu sitio Prestashop. Está desarrollado en base al [SDK oficial de PHP](https://github.com/TransbankDevelopers/transbank-sdk-php)
